@@ -8,6 +8,8 @@ const router = express.Router({mergeParams: true});
 router.get('/steam/:id/summary', controller.steamSummary);
 router.get('/steam/:id/recently-played', controller.steamRecentlyPlayed)
 router.get('/catto', routers.dailyCatto)
+router.get('/steam/:id/summary/svg', controller.steamSummarySvg)
+
 router.get('/health', standardRoutes.health)
 router.get('/version', standardRoutes.version)
 
