@@ -86,17 +86,20 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
         steamData['name'] = summaryResult.data.response.players[0].personaname;
         steamData['picture'] = Buffer.from(await (await axios.get(summaryResult.data.response.players[0].avatar, {responseType: 'arraybuffer'})).data).toString('base64');
         steamData['url'] = summaryResult.data.response.players[0].profileurl;
-        
-        for(let recentGame of recentlyPlayedResult.data.response.games) {
-            let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
-            steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks })
+        if(recentlyPlayedResult.data.response.games) {
+            for(let recentGame of recentlyPlayedResult.data.response.games) {
+                let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
+                steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks })
+            }
         }
+        
         let svg: any = await generateSVG.generatedSVG(steamData);
         res.setHeader('content-type', 'image/svg+xml')
         res.status(200).send(svg)
     }
     catch(err) {
         const error = new Error('Unable to Handle Request.');
+        console.log(err)
         return res.status(500).json(error.message);
     }
 }
