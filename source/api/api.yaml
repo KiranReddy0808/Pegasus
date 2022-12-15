@@ -1,0 +1,329 @@
+openapi: 3.0.0
+info:
+  title: Pegasus API
+  version: "1.0"
+  description: API to fetch personal information
+  contact:
+    name: Sai Kiran
+    email: saikiranreddy.saikiran@gmail.com
+
+servers:
+  - url: 'https://localhost:8080'
+    description: Localhost Base URL for the API
+
+tags:
+  - name: steam
+    description: Steam endpoints
+  - name: standard
+    description: Standard Routes
+  - name: image
+    description: Images
+
+paths:
+  /steam/{id}/summary:
+    summary: Steam player Summary
+    get:
+      operationId: steam-player-summary
+      description: Fetch steam player summary
+      tags: [steam]
+      parameters:
+        - name: id
+          in: path
+          description: Steam player id
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+      responses:
+        '200':
+          description: Player summary retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/steamSummary'
+
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: not found
+
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+  /steam/{id}/recently-played:
+    summary: Steam Recently Played
+    get:
+      operationId: steam-recently-played
+      description: Fetch steam recently played
+      tags: [steam]
+      parameters:
+        - name: id
+          in: path
+          description: Steam player id
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+      responses:
+        '200':
+          description: Player recent played retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/steamRecentlyPlayed'
+
+        '404':
+          description: user not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: not found
+
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+  /steam/{id}/summary/svg:
+    summary: Steam Recently Played SVG
+    get:
+      operationId: steam-summary-svg
+      description: Fetch steam recently played
+      tags: [steam]
+      parameters:
+        - name: id
+          in: path
+          description: Steam player id
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+      responses:
+        '200':
+          description: Player recent played retrieved successfully
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+
+        '404':
+          description: not found
+          content:
+            application/json:
+              schema:
+                type: string
+                example: not found
+
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+  /catto:
+    summary: Random Cat Images
+    get:
+      operationId: get-cat-images
+      description: Fetch Cat Images
+      tags: [image]
+      responses:
+        '200':
+          description: Cat image retrieved successfully
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+  /health:
+    summary: API health
+    get:
+      operationId: health
+      tags: [standard]
+      description: Get health status
+      responses:
+        '200':
+          description: health status retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                enum: ['up', 'down']
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+  /version:
+    summary: API health
+    get:
+      operationId: version
+      tags: [standard]
+      description: Get version
+      responses:
+        '200':
+          description: version retrieved
+          content:
+            application/json:
+              schema:
+                type: string
+                pattern: ^[0-9]+\.[0-9]+\.[0-9]+$
+                example: 1.0.0
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+components:
+  schemas:
+    steamSummary:
+      type: object
+      properties:
+          data:
+            type: object
+            properties:
+              response:
+                type: object
+                properties:
+                  players:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        steamid: 
+                          type: string
+                          minLength: 0
+                          maxLength: 63
+                        communityvisibilitystate:
+                          type: number
+                          minimum: 0
+                          maximum: 9
+                        profilestate:
+                          type: number
+                          minimum: 0
+                          maximum: 9
+                        personname:
+                          type: string
+                          minLength: 1
+                          maxLength: 100
+                        profileurl:
+                          type: string
+                          format: url
+                        avatar:
+                          type: string
+                          format: url
+                        avatarmedium:
+                          type: string
+                          format: url
+                        avatarfull:
+                          type: string
+                          format: url
+                        avatarhash:
+                          type: string
+                          minLength: 1
+                          maxLength: 100
+                        lastlogoff:
+                          type: number
+                          minimum: 0
+                          maximum: 9999999999999999
+                        personastate:
+                          type: number
+                          minimum: 0
+                          maximum: 9
+                        primaryclanid:
+                          type: string
+                          minLength: 0
+                          maxLength: 999
+                        timecreated:
+                          type: number
+                          minimum: 0
+                          maximum: 9999999999999999
+                        personastateflag:
+                          type: number
+                          minimum: 0
+                          maximum: 9
+    
+    steamRecentlyPlayed:
+      type: object
+      properties:
+        data:
+          type: object
+          properties:
+            responses:
+              type: object
+              properties:
+                total_count:
+                  type: number
+                  minimum: 0
+                  maximum: 100
+                games:
+                  type: array
+                  minItems: 0
+                  maxItems: 100
+                  items:
+                    type: object
+                    properties:
+                      appid:
+                        type: number
+                        minimum: 0
+                        maximum: 99999999999999999999
+                      name:
+                        type: string
+                        minLength: 1
+                        maxLength: 9999999999
+                      playtime_2weeks:
+                        type: number
+                        minimum: 0
+                        maximum: 9999999
+                      playtime_forever:
+                        type: number
+                        minimum: 0
+                        maximum: 999999999999999999
+                      img_icon_url:
+                        type: string
+                        minLength: 1
+                        maxLength: 999999
+                      playtime_windows_forever:
+                        type: number
+                        minimum: 0
+                        maximum: 999999999999999999
+                      playtime_mac_forever:
+                        type: number
+                        minimum: 0
+                        maximum: 999999999999999999
+                      playtime_linux_forever:
+                        type: number
+                        minimum: 0
+                        maximum: 999999999999999999
