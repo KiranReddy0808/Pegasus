@@ -2,11 +2,15 @@
 import http from 'http';
 import express, { Express } from 'express';
 import morgan from 'morgan';
+import fs from 'fs';
 import routes from './routes/routes';
-import path from 'path'
+import path from 'path';
+import yaml from 'js-yaml';
+import swaggerUI from 'swagger-ui-express';
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 
 const router: Express = express();
+const apiSpecPath: string = path.join(__dirname, 'api', 'api.yaml')
 
 /** Logging */
 router.use(morgan('dev'));
@@ -31,6 +35,10 @@ router.use((req, res, next) => {
 
 /** Routes */
 router.use('/', routes);
+
+const apiSpecDoc: any = yaml.load(fs.readFileSync(apiSpecPath, 'utf8'));
+router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(apiSpecDoc))
+
 
 /** Error handling */
 router.use((req, res, next) => {

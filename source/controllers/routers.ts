@@ -24,6 +24,9 @@ const steamSummary = async (req: Request, res: Response, next: NextFunction) => 
         let result: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
         console.log(result)
         let steamSummaryPayload: any = result.data;
+        if(result.data.response.players.length == 0) {
+            return res.status(404).json('Player not found. Check if the status of the profile is public.')
+        }
         return res.status(200).json({
             data: steamSummaryPayload
         });
@@ -41,12 +44,17 @@ const steamRecentlyPlayed = async (req: Request, res: Response, next: NextFuncti
         let steamId: string = req.params.id;
         let result: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
         let steamRecentlyPlayedPayload: any = result.data;
+        console.log(steamRecentlyPlayedPayload)
+        // if(result.data.response.players.length == 0) {
+        //     return res.status(404).json('Player not found. Check if the status of the profile is public.')
+        // }
         return res.status(200).json({
             data :steamRecentlyPlayedPayload
         });
     }
     catch(err) {
         const error = new Error('Unable to Handle Request.');
+        console.log(err)
         return res.status(500).json(error.message);
     }
 
@@ -80,7 +88,7 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
         let summaryResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
         let recentlyPlayedResult: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
         if(summaryResult.data.response.players.length == 0) {
-            return res.status(400).json("Steam User Not Found.");
+            return res.status(404).json("Steam User Not Found.");
         }
         let steamData: SteamData = {name : '', picture: '', url: '', recentGames: []  };
         steamData['name'] = summaryResult.data.response.players[0].personaname;
@@ -92,6 +100,7 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
                 steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks })
             }
         }
+        console.log(steamData)
         
         let svg: any = await generateSVG.generatedSVG(steamData);
         res.setHeader('content-type', 'image/svg+xml')
