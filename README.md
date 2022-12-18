@@ -26,7 +26,7 @@ The motivation to build this application was to showcase what I watch, play, lis
 
 ## Documentation
 
-API documentation is available ![here](https://walrus-app-lrhok.ondigitalocean.app/). Contract is also available in the repository at [api.yaml](source/api/api.yaml)
+API documentation is available [here](https://walrus-app-lrhok.ondigitalocean.app/api-docs). Contract is also available in the repository at [api.yaml](source/api/api.yaml)
 
 ## Contact
 
