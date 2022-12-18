@@ -80,6 +80,26 @@ const dailyCatto = async (req: Request, res: Response, next: NextFunction) => {
         
 }
 
+const dailyDoggo = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        let result: AxiosResponse = await axios.get(`https://api.thedogapi.com/v1/images/search`);
+        let doggo: any = result.data[0].url;
+        let dogStream: any = await axios.get(doggo, {responseType: 'arraybuffer'})
+        let dogImage: any = Buffer.from(dogStream.data)
+        res.writeHead(200, {
+            'Content-Type': 'image/jpeg',
+            'Content-Length': dogImage.length
+        });
+        res.end(dogImage); 
+    }
+    catch(err) {
+        const error = new Error('Unable to Handle Request.');
+        return res.status(500).json(error.message);
+    }
+
+        
+}
+
 const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) => {
 
     try {
@@ -116,4 +136,4 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
 
 
 
-export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg};
+export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo};
