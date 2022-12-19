@@ -1,6 +1,6 @@
 # Pegasus
 
-The motivation to build this application was to showcase what I watch, play, listen and read on my github static site. The app is live at [this](https://walrus-app-lrhok.ondigitalocean.app/) link.
+The motivation to build this application was to showcase about me on my github static site. The app is live at [this](https://walrus-app-lrhok.ondigitalocean.app/) link.
 
 ## Goals
 
