@@ -18,7 +18,7 @@ The motivation to build this application was to showcase about me on my github s
 ## Upcoming features
 
 1. Validate Contract with Spectral Stoplight
-2. Integration with Sonarqube
+2. Code vulnerability checks and cleaner, commented code
 3. OpenLibray integration for Books
 4. Spotify integration for playlists
 5. Trakt.tv integration for movies and shows
