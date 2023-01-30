@@ -1,0 +1,19 @@
+name: Run Spectral against API Contract
+on:
+  - workflow_dispatch
+  - push
+  - pull_request
+    
+jobs:
+  build:
+    name: API Contract Validation
+    runs-on: ubuntu-latest
+    steps:
+      #Check out the repository
+      - uses: actions/checkout@v2
+
+      # Run Spectral
+      - uses: stoplightio/spectral-action@latest
+        with:
+          file_glob: 'source/api/api.yaml'
+          spectral_ruleset: 'resources/spectral/rules.spectral.json'
