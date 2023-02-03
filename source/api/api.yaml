@@ -37,30 +37,6 @@ paths:
             type: string
             minLength: 1
             maxLength: 64
-        - name: RateLimit-Limit
-          in: header
-          description: Total number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 1
-            maximum: 50
-        - name: RateLimit-Remaining
-          in: header
-          description: Remaining number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 50
-        - name: RateLimit-Reset
-          in: header
-          description: Time in seconds before rate limiting resets
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 3600
       responses:
         '200':
           description: Player summary retrieved successfully
