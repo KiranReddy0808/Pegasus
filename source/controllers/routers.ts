@@ -41,11 +41,12 @@ const steamRecentlyPlayed = async (req: Request, res: Response, next: NextFuncti
     try {
         let steamKey:any = process.env.STEAM_KEY;
         let steamId: string = req.params.id;
+        let profileResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
+        if(profileResult.data.response.players.length == 0) {
+            return res.status(404).json('Player not found. Check if the status of the profile is public.')
+        }
         let result: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
         let steamRecentlyPlayedPayload: any = result.data;
-        // if(result.data.response.players.length == 0) {
-        //     return res.status(404).json('Player not found. Check if the status of the profile is public.')
-        // }
         return res.status(200).json({
             data :steamRecentlyPlayedPayload
         });
@@ -104,10 +105,10 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
         let steamKey:any = process.env.STEAM_KEY;
         let steamId: string = req.params.id;
         let summaryResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
-        let recentlyPlayedResult: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
         if(summaryResult.data.response.players.length == 0) {
             return res.status(404).json("Steam User Not Found.");
         }
+        let recentlyPlayedResult: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
         let steamData: SteamData = {name : '', picture: '', url: '', recentGames: []  };
         steamData['name'] = summaryResult.data.response.players[0].personaname;
         steamData['picture'] = Buffer.from(await (await axios.get(summaryResult.data.response.players[0].avatar, {responseType: 'arraybuffer'})).data).toString('base64');

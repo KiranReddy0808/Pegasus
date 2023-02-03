@@ -8,9 +8,18 @@ import path from 'path';
 import yaml from 'js-yaml';
 import swaggerUI from 'swagger-ui-express';
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
-import rateLimit from 'express-rate-limit';
+import rateLimit, { RateLimitRequestHandler } from 'express-rate-limit';
 
-const rateLimiter = rateLimit({
+const standardRateLimiter: RateLimitRequestHandler = rateLimit({
+    windowMs: 60 * 60 * 1000,
+    max: 1000,
+    message: 'You have exceeded number of requests, Try again later!', 
+    standardHeaders: true,
+    legacyHeaders: false,
+  });
+
+
+const rateLimiter: RateLimitRequestHandler = rateLimit({
   windowMs: 60 * 60 * 1000,
   max: 50,
   message: 'You have exceeded number of requests, Try again later!', 
@@ -33,6 +42,9 @@ router.use('/steam/:id/recently-played', rateLimiter);
 router.use('/catto', rateLimiter);
 router.use('/steam/:id/summary/svg', rateLimiter);
 router.use('/doggo', rateLimiter);
+
+router.use('/version', standardRateLimiter);
+router.use('/health', standardRateLimiter);
 
 /** RULES OF OUR API */
 router.use((req, res, next) => {
@@ -57,8 +69,8 @@ router.use('/api-docs', swaggerUI.serve, swaggerUI.setup(apiSpecDoc))
 
 /** Error handling */
 router.use((req, res, next) => {
-    const error = new Error('not found');
-    return res.status(404).json({
+    const error = new Error('Bad Request');
+    return res.status(400).json({
         message: error.message
     });
 });
