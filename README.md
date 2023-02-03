@@ -33,4 +33,4 @@ API documentation is available [here](https://walrus-app-lrhok.ondigitalocean.ap
 Feel free to use this application in your websites or personal use. For suggestion or to contact me on my [instagram](https://www.instagram.com/pskiranreddy/)
 or mail me on [saikiranreddy.saikiran@gmail.com](mailto:saikiranreddy.saikiran@gmail.com)
 
-A Huge thank you to team which maintains [Public APIs](https://github.com/public-apis/public-apis) repository which acted as inspiration and place to discover new APIs.
+This is possible because of the team which maintains [Public APIs](https://github.com/public-apis/public-apis) repository which acted as inspiration and place to discover new APIs.
