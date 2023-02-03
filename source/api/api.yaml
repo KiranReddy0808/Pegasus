@@ -108,33 +108,16 @@ paths:
             type: string
             minLength: 1
             maxLength: 64
-        - name: RateLimit-Limit
-          in: header
-          description: Total number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 1
-            maximum: 50
-        - name: RateLimit-Remaining
-          in: header
-          description: Remaining number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 50
-        - name: RateLimit-Reset
-          in: header
-          description: Time in seconds before rate limiting resets
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 3600
       responses:
         '200':
           description: Player recent played retrieved successfully
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -142,6 +125,13 @@ paths:
 
         '404':
           description: user not found
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -158,6 +148,13 @@ paths:
 
         '429':
           description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -179,33 +176,16 @@ paths:
             type: string
             minLength: 1
             maxLength: 64
-        - name: RateLimit-Limit
-          in: header
-          description: Total number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 1
-            maximum: 50
-        - name: RateLimit-Remaining
-          in: header
-          description: Remaining number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 50
-        - name: RateLimit-Reset
-          in: header
-          description: Time in seconds before rate limiting resets
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 3600
       responses:
         '200':
           description: Player recent played retrieved successfully
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             image/svg+xml:
               schema:
@@ -214,6 +194,13 @@ paths:
 
         '404':
           description: not found
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -230,6 +217,13 @@ paths:
 
         '429':
           description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -242,34 +236,16 @@ paths:
       operationId: get-cat-images
       description: Fetch Cat Images
       tags: [image]
-      parameters:
-        - name: RateLimit-Limit
-          in: header
-          description: Total number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 1
-            maximum: 50
-        - name: RateLimit-Remaining
-          in: header
-          description: Remaining number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 50
-        - name: RateLimit-Reset
-          in: header
-          description: Time in seconds before rate limiting resets
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 3600
       responses:
         '200':
           description: Cat image retrieved successfully
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             image/jpeg:
               schema:
@@ -286,6 +262,13 @@ paths:
 
         '429':
           description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -298,34 +281,16 @@ paths:
       operationId: get-dog-images
       description: Fetch Dog Images
       tags: [image]
-      parameters:
-        - name: RateLimit-Limit
-          in: header
-          description: Total number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 1
-            maximum: 50
-        - name: RateLimit-Remaining
-          in: header
-          description: Remaining number of tries possible
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 50
-        - name: RateLimit-Reset
-          in: header
-          description: Time in seconds before rate limiting resets
-          required: true
-          schema:
-            type: number
-            minimum: 0
-            maximum: 3600
       responses:
         '200':
           description: Dog image retrieved successfully
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             image/jpeg:
               schema:
@@ -342,6 +307,13 @@ paths:
 
         '429':
           description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -394,6 +366,28 @@ paths:
                 example: Unable to Handle Request
 
 components:
+  headers:
+    RateLimit-Limit:
+      description: Total number of tries possible
+      required: true
+      schema:
+        type: number
+        minimum: 1
+        maximum: 50
+    RateLimit-Remaining:
+      description: Remaining number of tries possible
+      required: true
+      schema:
+        type: number
+        minimum: 0
+        maximum: 50
+    RateLimit-Reset:
+      description: Time in seconds before rate limiting resets
+      required: true
+      schema:
+        type: number
+        minimum: 0
+        maximum: 3600
   schemas:
     steamSummary:
       type: object
