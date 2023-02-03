@@ -121,7 +121,7 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
-            RetryAfter:
+            Retry-After:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -204,7 +204,7 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
-            RetryAfter:
+            Retry-After:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -289,7 +289,7 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
-            RetryAfter:
+            Retry-After:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -351,7 +351,7 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
-            RetryAfter:
+            Retry-After:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -413,7 +413,7 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
-            RetryAfter:
+            Retry-After:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -497,7 +497,7 @@ paths:
                 maximum: 1000
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
-            RetryAfter:
+            Retry-After:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -590,7 +590,7 @@ paths:
                 maximum: 1000
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
-            RetryAfter:
+            Retry-After:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
