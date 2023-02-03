@@ -64,13 +64,40 @@ paths:
       responses:
         '200':
           description: Player summary retrieved successfully
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/steamSummary'
-
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
         '404':
           description: not found
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -87,6 +114,13 @@ paths:
 
         '429':
           description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -122,7 +156,20 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/steamRecentlyPlayed'
-
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
         '404':
           description: user not found
           headers:
@@ -191,6 +238,20 @@ paths:
               schema:
                 type: string
                 format: binary
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
 
         '404':
           description: not found
@@ -252,6 +313,21 @@ paths:
                 type: string
                 format: binary
 
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
+
         '500':
           description: server unavailable
           content:
@@ -297,6 +373,21 @@ paths:
                 type: string
                 format: binary
 
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
+
         '500':
           description: server unavailable
           content:
@@ -329,11 +420,54 @@ paths:
       responses:
         '200':
           description: health status retrieved
+          headers:
+            RateLimit-Limit:
+              description: Total number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 1
+                maximum: 1000
+            RateLimit-Remaining:
+              description: Remaining number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 0
+                maximum: 1000
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
                 type: string
                 enum: ['up', 'down']
+
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              description: Total number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 1
+                maximum: 1000
+            RateLimit-Remaining:
+              description: Remaining number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 0
+                maximum: 1000
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
+
         '500':
           description: server unavailable
           content:
@@ -351,12 +485,54 @@ paths:
       responses:
         '200':
           description: version retrieved
+          headers:
+            RateLimit-Limit:
+              description: Total number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 1
+                maximum: 1000
+            RateLimit-Remaining:
+              description: Remaining number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 0
+                maximum: 1000
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
                 type: string
                 pattern: ^[0-9]+\.[0-9]+\.[0-9]+$
                 example: 1.0.0
+
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              description: Total number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 1
+                maximum: 1000
+            RateLimit-Remaining:
+              description: Remaining number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 0
+                maximum: 1000
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
         '500':
           description: server unavailable
           content:
