@@ -203,6 +203,14 @@ paths:
             type: string
             minLength: 1
             maxLength: 64
+        - name: color
+          in: query
+          description: background color
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
       responses:
         '200':
           description: Player recent played retrieved successfully

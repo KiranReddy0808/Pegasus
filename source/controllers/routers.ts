@@ -105,6 +105,7 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
     try {
         let steamKey:any = process.env.STEAM_KEY;
         let steamId: string = req.params.id;
+        let color:string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
         let summaryResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
         if(summaryResult.data.response.players.length == 0) {
             return res.status(404).json("Steam User Not Found.");
@@ -121,7 +122,7 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
             }
         }
         
-        let svg: any = await generateSVG.generatedSVG(steamData);
+        let svg: any = await generateSVG.generatedSVG(steamData, color);
         res.setHeader('content-type', 'image/svg+xml')
         res.status(200).send(svg)
     }
