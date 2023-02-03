@@ -121,6 +121,8 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
+            RetryAfter:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -201,6 +203,8 @@ paths:
             RateLimit-Remaining:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+            RetryAfter:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -285,6 +289,8 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
+            RetryAfter:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -345,6 +351,8 @@ paths:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
               $ref: '#/components/headers/RateLimit-Reset'
+            RetryAfter:
+              $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
               schema:
@@ -404,6 +412,8 @@ paths:
             RateLimit-Remaining:
               $ref: '#/components/headers/RateLimit-Remaining'
             RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+            RetryAfter:
               $ref: '#/components/headers/RateLimit-Reset'
           content:
             application/json:
@@ -467,6 +477,33 @@ paths:
               schema:
                 type: string
                 example: bad request
+
+        '429':
+          description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              description: Total number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 1
+                maximum: 1000
+            RateLimit-Remaining:
+              description: Remaining number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 0
+                maximum: 1000
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+            RetryAfter:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'You have exceeded number of requests, Try again later!'
 
         '500':
           description: server unavailable
@@ -533,6 +570,34 @@ paths:
               schema:
                 type: string
                 example: bad request
+
+        '429':
+          description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              description: Total number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 1
+                maximum: 1000
+            RateLimit-Remaining:
+              description: Remaining number of tries possible
+              required: true
+              schema:
+                type: number
+                minimum: 0
+                maximum: 1000
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+            RetryAfter:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'You have exceeded number of requests, Try again later!'
+
         '500':
           description: server unavailable
           content:
