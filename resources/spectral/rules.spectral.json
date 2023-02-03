@@ -1,5 +1,5 @@
 {
-    "extends": ["https://unpkg.com/@stoplight/spectral-owasp-ruleset@1.1.1/dist/ruleset.js", "https://unpkg.com/@stoplight/spectral-url-versioning@1.0.4/dist/ruleset.js"],
+    "extends": ["https://unpkg.com/@stoplight/spectral-owasp-ruleset@1.1.1/dist/ruleset.js", "https://unpkg.com/@stoplight/spectral-url-versioning@1.0.4/dist/ruleset.js", "openapi-ruleset/ruleset.ts"],
     "rules": {
         "do-nothing" : {
             "description" : "This rule does nothing",
