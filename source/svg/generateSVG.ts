@@ -1,6 +1,5 @@
 const generatedSVG = async (steamData: any) => {
     let result: any = ''
-    console.log(steamData)
     let gamesCount:number = steamData['recentGames'].length;
     let height: number = 220 + gamesCount*80;
     let gamesStatus: string = gamesCount?'Recently Played':'No Recently Played Games';
