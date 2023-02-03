@@ -6,6 +6,7 @@ interface SteamData {
     name : string,
     picture: any,
     url: string,
+    status: string,
     recentGames: Array<RecentGame>
 }
 
@@ -101,7 +102,7 @@ const dailyDoggo = async (req: Request, res: Response, next: NextFunction) => {
 }
 
 const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) => {
-
+    let states: Array<string> = ['Offline', 'Online', 'Busy','Away','Snooze','Looking to trade', 'Looking to play']
     try {
         let steamKey:any = process.env.STEAM_KEY;
         let steamId: string = req.params.id;
@@ -111,10 +112,13 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
             return res.status(404).json("Steam User Not Found.");
         }
         let recentlyPlayedResult: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
-        let steamData: SteamData = {name : '', picture: '', url: '', recentGames: []  };
+        let steamData: SteamData = {name : '', picture: '', url: '', recentGames: [], status: 'offline'};
+        let statusNumber: number = summaryResult.data.response.players[0].personastate
+        console.log(statusNumber)
         steamData['name'] = summaryResult.data.response.players[0].personaname;
         steamData['picture'] = Buffer.from(await (await axios.get(summaryResult.data.response.players[0].avatar, {responseType: 'arraybuffer'})).data).toString('base64');
         steamData['url'] = summaryResult.data.response.players[0].profileurl;
+        steamData['status'] = states[statusNumber]?states[statusNumber]:states[0]
         if(recentlyPlayedResult.data.response.games) {
             for(let recentGame of recentlyPlayedResult.data.response.games) {
                 let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
