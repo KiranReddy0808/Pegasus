@@ -12,7 +12,8 @@ interface SteamData {
 interface RecentGame {
     name: string,
     picture: string,
-    playTimeTwoWeeks: number
+    playTimeTwoWeeks: number,
+    playTimeForever: number
 }
 
 
@@ -116,7 +117,7 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
         if(recentlyPlayedResult.data.response.games) {
             for(let recentGame of recentlyPlayedResult.data.response.games) {
                 let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
-                steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks })
+                steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks, playTimeForever: recentGame.playtime_forever })
             }
         }
         
