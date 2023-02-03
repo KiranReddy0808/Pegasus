@@ -1,5 +1,8 @@
 # Pegasus
 
+ ![GitHub package.json version](https://img.shields.io/github/package-json/v/KiranReddy0808/Pegasus) ![Swagger Validator](https://img.shields.io/swagger/valid/3.0?specUrl=https%3A%2F%2Fraw.githubusercontent.com%2FKiranReddy0808%2FPegasus%2Fmain%2Fsource%2Fapi%2Fapi.yaml) ![GitHub last commit](https://img.shields.io/github/last-commit/KiranReddy0808/Pegasus) ![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=blue&up_message=online&url=https%3A%2F%2Fwalrus-app-lrhok.ondigitalocean.app%2Fapi-docs%2F)
+ ![GitHub Workflow Status (with branch)](https://img.shields.io/github/actions/workflow/status/KiranReddy0808/Pegasus/main.yml?branch=main&label=API%20Spec)
+
 The motivation to build this application was to showcase about me on my github static site. The app is live at [this](https://walrus-app-lrhok.ondigitalocean.app/) link.
 
 ## Goals
