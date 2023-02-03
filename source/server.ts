@@ -8,6 +8,15 @@ import path from 'path';
 import yaml from 'js-yaml';
 import swaggerUI from 'swagger-ui-express';
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
+import rateLimit from 'express-rate-limit';
+
+const rateLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: 50,
+  message: 'You have exceeded number of requests, Try again later!', 
+  standardHeaders: true,
+  legacyHeaders: false,
+});
 
 const router: Express = express();
 const apiSpecPath: string = path.join(__dirname, 'api', 'api.yaml')
@@ -18,6 +27,12 @@ router.use(morgan('dev'));
 router.use(express.urlencoded({ extended: false }));
 /** Takes care of JSON data */
 router.use(express.json());
+
+router.use('/steam/:id/summary', rateLimiter);
+router.use('/steam/:id/recently-played', rateLimiter);
+router.use('/catto', rateLimiter);
+router.use('/steam/:id/summary/svg', rateLimiter);
+router.use('/doggo', rateLimiter);
 
 /** RULES OF OUR API */
 router.use((req, res, next) => {

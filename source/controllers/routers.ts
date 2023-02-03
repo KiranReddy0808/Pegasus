@@ -22,7 +22,6 @@ const steamSummary = async (req: Request, res: Response, next: NextFunction) => 
         let steamKey:any = process.env.STEAM_KEY;
         let steamId: string = req.params.id;
         let result: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
-        console.log(result)
         let steamSummaryPayload: any = result.data;
         if(result.data.response.players.length == 0) {
             return res.status(404).json('Player not found. Check if the status of the profile is public.')
@@ -44,7 +43,6 @@ const steamRecentlyPlayed = async (req: Request, res: Response, next: NextFuncti
         let steamId: string = req.params.id;
         let result: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
         let steamRecentlyPlayedPayload: any = result.data;
-        console.log(steamRecentlyPlayedPayload)
         // if(result.data.response.players.length == 0) {
         //     return res.status(404).json('Player not found. Check if the status of the profile is public.')
         // }
@@ -120,7 +118,6 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
                 steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks })
             }
         }
-        console.log(steamData)
         
         let svg: any = await generateSVG.generatedSVG(steamData);
         res.setHeader('content-type', 'image/svg+xml')
