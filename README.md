@@ -11,18 +11,20 @@ The motivation to build this application was to showcase about me on my github s
 
 ## Current Features
 
-1. Valve Steam Information
-2. Random Cat and Dog Images
-3. Standard health and version endpoint
+* Valve Steam Information
+* Random Cat and Dog Images
+* Standard health and version endpoint
+* Validate Contract with Spectral Stoplight
+* Rate Limiting
 
 ## Upcoming features
 
-1. Validate Contract with Spectral Stoplight
-2. Code vulnerability checks and cleaner, commented code
-3. OpenLibray integration for Books
-4. Spotify integration for playlists
-5. Trakt.tv integration for movies and shows
-6. Better error handling with proper error codes
+
+* Code vulnerability checks and cleaner, commented code
+* OpenLibray integration for Books
+* Spotify integration for playlists
+* Trakt.tv integration for movies and shows
+* Better error handling with proper error codes
 
 ## Documentation
 
