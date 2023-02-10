@@ -20,6 +20,20 @@ The motivation to build this application was to showcase about me on my github s
 * Validate Contract with Spectral Stoplight
 * Rate Limiting
 
+## Example
+
+An working example of how it works. The below image is returned in the GET call to the service.
+![Steam Recent Played](https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/svg?color=coral)
+![Random Cat](https://walrus-app-lrhok.ondigitalocean.app/catto)
+![Random Dog](https://walrus-app-lrhok.ondigitalocean.app/doggo)
+
+The service also has other endpoints which return JSON response on the steam data.
+
+https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/
+
+https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/recently-played/
+
+
 ## Upcoming features
 
 
