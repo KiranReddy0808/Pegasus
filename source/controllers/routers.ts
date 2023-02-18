@@ -128,7 +128,6 @@ const psnData = async (psnId: string) => {
     let npssoID: any = process.env.NPSSO
     const accessCode = await exchangeNpssoForCode(npssoID);
     const authorization = await exchangeCodeForAccessToken(accessCode);
-    
     const allAccountsSearchResults = await makeUniversalSearch(
         authorization,
         psnId,
@@ -142,7 +141,8 @@ const psnData = async (psnId: string) => {
     );
     let psnUserData: PsnData = {name: accData.socialMetadata.verifiedUserName?accData.socialMetadata.verifiedUserName:'',onlineId: accData.socialMetadata.onlineId, isPSPlus: accData.socialMetadata.isPsPlus, accountId: accData.socialMetadata.accountId, picture: accPicture, games: [] }
     if(trophyTitlesResponse.trophyTitles) {
-        for(const gameData of trophyTitlesResponse.trophyTitles) {
+        const gamesData = (trophyTitlesResponse.trophyTitles.length>10)?trophyTitlesResponse.trophyTitles.slice(0,10):trophyTitlesResponse.trophyTitles
+        for(const gameData of gamesData) {
             let gameImage = Buffer.from(await (await axios.get(gameData.trophyTitleIconUrl, {responseType: 'arraybuffer'})).data).toString('base64')
             psnUserData.games.push({name: gameData.trophyTitleName, picture: gameImage, earnedTrophies: gameData.earnedTrophies, definedTrophies: gameData.definedTrophies, platform: gameData.trophyTitlePlatform  })
         }
