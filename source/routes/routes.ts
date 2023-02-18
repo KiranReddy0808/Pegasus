@@ -10,6 +10,8 @@ router.get('/steam/:id/recently-played', controller.steamRecentlyPlayed)
 router.get('/catto', routers.dailyCatto)
 router.get('/steam/:id/summary/svg', controller.steamSummarySvg)
 router.get('/doggo', routers.dailyDoggo)
+router.get('/psn/:id/summary', controller.psnSummary)
+router.get('/psn/:id/summary/svg', controller.psnSummarySVG)
 
 router.get('/health', standardRoutes.health)
 router.get('/version', standardRoutes.version)

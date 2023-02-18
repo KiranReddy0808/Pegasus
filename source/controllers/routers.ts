@@ -1,6 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
 import axios, { AxiosResponse } from 'axios';
 import generateSVG from '../svg/generateSVG';
+import fs from "fs";
+
+import type { Trophy } from "psn-api";
+import {
+  exchangeCodeForAccessToken,
+  exchangeNpssoForCode,
+  getTitleTrophies,
+  getUserTitles,
+  getUserTrophiesEarnedForTitle,
+  makeUniversalSearch,
+  TrophyRarity
+} from "psn-api";
 
 interface SteamData {
     name : string,
@@ -17,6 +29,29 @@ interface RecentGame {
     playTimeForever: number
 }
 
+interface PsnData {
+    name : string,
+    accountId: string,
+    onlineId: string,
+    isPSPlus: boolean,
+    picture: string,
+    games: Array<PSGames>
+}
+
+interface PSGames {
+    name : string,
+    picture: string,
+    earnedTrophies: Trophies,
+    definedTrophies: Trophies,
+    platform: string
+}
+
+interface Trophies {
+    bronze: number,
+    silver: number,
+    gold: number,
+    platinum: number
+}
 
 
 const steamSummary = async (req: Request, res: Response, next: NextFunction) => {
@@ -137,7 +172,51 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
     }
 }
 
+const psnData = async (psnId: string) => {
+    let npssoID: any = process.env.NPSSO
+    const accessCode = await exchangeNpssoForCode(npssoID);
+    const authorization = await exchangeCodeForAccessToken(accessCode);
+    
+    const allAccountsSearchResults = await makeUniversalSearch(
+        authorization,
+        psnId,
+        "SocialAllAccounts"
+    );
+    const accData: any = allAccountsSearchResults.domainResponses[0].results[0]
+    const accPicture: string = Buffer.from(await (await axios.get(accData.socialMetadata.avatarUrl, {responseType: 'arraybuffer'})).data).toString('base64')
+    const trophyTitlesResponse: any = await getUserTitles(
+        { accessToken: authorization.accessToken },
+        accData.socialMetadata.accountId
+    );
+    let psnUserData: PsnData = {name: accData.socialMetadata.verifiedUserName?accData.socialMetadata.verifiedUserName:'',onlineId: accData.socialMetadata.onlineId, isPSPlus: accData.socialMetadata.isPsPlus, accountId: accData.socialMetadata.accountId, picture: accPicture, games: [] }
+    if(trophyTitlesResponse.trophyTitles) {
+        for(const gameData of trophyTitlesResponse.trophyTitles) {
+            let gameImage = Buffer.from(await (await axios.get(gameData.trophyTitleIconUrl, {responseType: 'arraybuffer'})).data).toString('base64')
+            psnUserData.games.push({name: gameData.trophyTitleName, picture: gameImage, earnedTrophies: gameData.earnedTrophies, definedTrophies: gameData.definedTrophies, platform: gameData.trophyTitlePlatform  })
+        }
+    }
+    
+    return psnUserData
+}
+
+const psnSummary = async (req: Request, res: Response, next: Function) => {
+    let psnId: string = req.params.id;
+    const psnUserData = await psnData(psnId)
+    res.status(200).json({
+        data : {psnUserData}
+    });
+}
+
+const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
+    let psnId: string = req.params.id;
+    let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+    let psnUserData = await psnData(psnId)
+    let svg: any = await generateSVG.generatedPSNSVG(psnUserData, color);
+        res.setHeader('content-type', 'image/svg+xml')
+    res.status(200).send(svg)
+}
 
 
 
-export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo};
+
+export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo, psnSummary, psnSummarySVG};
