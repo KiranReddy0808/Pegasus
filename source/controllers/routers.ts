@@ -200,20 +200,36 @@ const psnData = async (psnId: string) => {
 }
 
 const psnSummary = async (req: Request, res: Response, next: Function) => {
-    let psnId: string = req.params.id;
-    const psnUserData = await psnData(psnId)
-    res.status(200).json({
-        data : {psnUserData}
-    });
+    try {
+        let psnId: string = req.params.id;
+        const psnUserData = await psnData(psnId)
+        res.status(200).json({
+            data : {psnUserData}
+        });
+    }
+    catch(err) {
+        const error = new Error('Unable to Handle Request.');
+        console.log(err)
+        return res.status(500).json(error.message);
+    }
+    
 }
 
 const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
-    let psnId: string = req.params.id;
-    let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
-    let psnUserData = await psnData(psnId)
-    let svg: any = await generateSVG.generatedPSNSVG(psnUserData, color);
+    try {
+        let psnId: string = req.params.id;
+        let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+        let psnUserData = await psnData(psnId)
+        let svg: any = await generateSVG.generatedPSNSVG(psnUserData, color);
         res.setHeader('content-type', 'image/svg+xml')
-    res.status(200).send(svg)
+        res.status(200).send(svg)
+    }
+    catch(err) {
+        const error = new Error('Unable to Handle Request.');
+        console.log(err)
+        return res.status(500).json(error.message);
+    }
+    
 }
 
 
