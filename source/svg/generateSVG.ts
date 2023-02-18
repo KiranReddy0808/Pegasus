@@ -1,17 +1,4 @@
-interface SteamData {
-    name : string,
-    picture: any,
-    url: string,
-    status: string,
-    recentGames: Array<RecentGame>
-}
-
-interface RecentGame {
-    name: string,
-    picture: string,
-    playTimeTwoWeeks: number,
-    playTimeForever: number
-}
+import type {SteamData, PsnData} from "../models"
 
 const generatedSVG = async (steamData: SteamData, color: string) => {
     let result: any = ''
@@ -29,7 +16,7 @@ const generatedSVG = async (steamData: SteamData, color: string) => {
     return result
 }
 
-const generatedPSNSVG = async (psnData: any, color: string) => {
+const generatedPSNSVG = async (psnData: PsnData, color: string) => {
     let result: any = ''
     let gamesCount:number = psnData['games'].length;
     let height: number = 220 + gamesCount*80;

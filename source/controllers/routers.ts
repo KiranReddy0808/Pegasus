@@ -1,57 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import axios, { AxiosResponse } from 'axios';
 import generateSVG from '../svg/generateSVG';
-import fs from "fs";
-
 import type { Trophy } from "psn-api";
-import {
-  exchangeCodeForAccessToken,
-  exchangeNpssoForCode,
-  getTitleTrophies,
-  getUserTitles,
-  getUserTrophiesEarnedForTitle,
-  makeUniversalSearch,
-  TrophyRarity
-} from "psn-api";
-
-interface SteamData {
-    name : string,
-    picture: any,
-    url: string,
-    status: string,
-    recentGames: Array<RecentGame>
-}
-
-interface RecentGame {
-    name: string,
-    picture: string,
-    playTimeTwoWeeks: number,
-    playTimeForever: number
-}
-
-interface PsnData {
-    name : string,
-    accountId: string,
-    onlineId: string,
-    isPSPlus: boolean,
-    picture: string,
-    games: Array<PSGames>
-}
-
-interface PSGames {
-    name : string,
-    picture: string,
-    earnedTrophies: Trophies,
-    definedTrophies: Trophies,
-    platform: string
-}
-
-interface Trophies {
-    bronze: number,
-    silver: number,
-    gold: number,
-    platinum: number
-}
+import { exchangeCodeForAccessToken, exchangeNpssoForCode, getTitleTrophies, getUserTitles, getUserTrophiesEarnedForTitle, makeUniversalSearch, TrophyRarity} from "psn-api";
+import type {SteamData, PsnData} from "../models"
 
 
 const steamSummary = async (req: Request, res: Response, next: NextFunction) => {
