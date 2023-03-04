@@ -42,6 +42,9 @@ router.use('/steam/:id/recently-played', rateLimiter);
 router.use('/catto', rateLimiter);
 router.use('/steam/:id/summary/svg', rateLimiter);
 router.use('/doggo', rateLimiter);
+router.use('/psn/:id/summary', rateLimiter)
+router.use('/psn/:id/summary/svg', rateLimiter)
+
 
 router.use('/version', standardRateLimiter);
 router.use('/health', standardRateLimiter);
