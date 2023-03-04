@@ -14,7 +14,8 @@ The motivation to build this application was to showcase about me on my github s
 
 ## Current Features
 
-* Valve Steam Information
+* Valve Steam Account Information
+* Playstation Account Information
 * Random Cat and Dog Images
 * Standard health and version endpoint
 * Validate Contract with Spectral Stoplight
@@ -24,6 +25,8 @@ The motivation to build this application was to showcase about me on my github s
 
 An working example of how it works. The below image is returned in the GET call to the service.
 ![Steam Recent Played](https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/svg?color=coral)
+
+![Playstation Played](https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/svg?color=coral)
 
 
 ![Random Cat](https://walrus-app-lrhok.ondigitalocean.app/catto)
@@ -36,6 +39,8 @@ The service also has other endpoints which return JSON response on the steam dat
 https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/
 
 https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/recently-played/
+
+https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/
 
 
 ## Upcoming features
