@@ -133,6 +133,10 @@ const psnData = async (psnId: string) => {
         "SocialAllAccounts"
     );
 
+    if(allAccountsSearchResults.domainResponses[0].results.length == 0) {
+        throw new Error('No User Found.')
+    }
+
     const accData: any = allAccountsSearchResults.domainResponses[0].results[0]
     const trophyTitlesResponse: any = await getUserTitles(
         { accessToken: authorization.accessToken },
@@ -180,9 +184,16 @@ const psnSummary = async (req: Request, res: Response, next: Function) => {
         });
     }
     catch(err) {
-        const error = new Error('Unable to Handle Request.');
+
         console.log(err)
-        return res.status(500).json(error.message);
+
+        if(err instanceof Error && err.message.includes("No User Found")) {
+            return res.status(404).json(err.message)
+        }
+        else {
+            const error = new Error('Unable to Handle Request.');
+            return res.status(500).json(error.message);
+        }
     }
     
 }
@@ -197,9 +208,16 @@ const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
         res.status(200).send(svg)
     }
     catch(err) {
-        const error = new Error('Unable to Handle Request.');
+
         console.log(err)
-        return res.status(500).json(error.message);
+        
+        if(err instanceof Error && err.message.includes("No User Found")) {
+            return res.status(404).json(err.message)
+        }
+        else {
+            const error = new Error('Unable to Handle Request.');
+            return res.status(500).json(error.message);
+        }
     }
     
 }
