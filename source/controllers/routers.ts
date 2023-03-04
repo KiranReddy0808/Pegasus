@@ -137,12 +137,12 @@ const psnData = async (psnId: string) => {
         throw new Error('No User Found.')
     }
 
-    const accData: any = allAccountsSearchResults.domainResponses[0].results[0]
+    const accData: any = allAccountsSearchResults.domainResponses[0].results[0].socialMetadata
     const trophyTitlesResponse: any = await getUserTitles(
         { accessToken: authorization.accessToken },
-        accData.socialMetadata.accountId
+        accData.accountId
     );
-    let psnUserData: PsnData = {name: accData.socialMetadata.verifiedUserName?accData.socialMetadata.verifiedUserName:'',onlineId: accData.socialMetadata.onlineId, isPSPlus: accData.socialMetadata.isPsPlus, accountId: accData.socialMetadata.accountId, picture: accData.socialMetadata.avatarUrl, games: [] }
+    let psnUserData: PsnData = {name: accData.verifiedUserName?accData.verifiedUserName:'',onlineId: accData.onlineId, isPSPlus: accData.isPsPlus, accountId: accData.accountId, picture: accData.avatarUrl, games: [] }
     if(trophyTitlesResponse.trophyTitles) {
         const gamesData = (trophyTitlesResponse.trophyTitles.length>10)?trophyTitlesResponse.trophyTitles.slice(0,10):trophyTitlesResponse.trophyTitles
         for(const gameData of gamesData) {
@@ -210,7 +210,7 @@ const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
     catch(err) {
 
         console.log(err)
-        
+
         if(err instanceof Error && err.message.includes("No User Found")) {
             return res.status(404).json(err.message)
         }
