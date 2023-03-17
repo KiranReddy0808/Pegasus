@@ -23,7 +23,7 @@ The motivation to build this application was to showcase about me on my github s
 
 ## Example
 
-An working example of how it works. The below image is returned in the GET call to the service.
+An example of how it works. The below image is returned in the GET call to the service.
 ![Steam Recent Played](https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/svg?color=coral)
 
 ![Playstation Played](https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/svg?color=coral)
@@ -58,7 +58,7 @@ API documentation is available [here](https://walrus-app-lrhok.ondigitalocean.ap
 
 ## Contact
 
-Feel free to use this application in your websites or personal use. For suggestion or to contact me on my [instagram](https://www.instagram.com/pskiranreddy/)
+Feel free to use this application in your websites or personal use. For suggestions contact me on my [instagram](https://www.instagram.com/pskiranreddy/)
 or mail me on [saikiranreddy.saikiran@gmail.com](mailto:saikiranreddy.saikiran@gmail.com)
 
 This is possible because of [Public APIs](https://github.com/public-apis/public-apis) team which acted as inspiration and place to discover new APIs.
