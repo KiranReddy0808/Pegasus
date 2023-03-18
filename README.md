@@ -26,7 +26,7 @@ The motivation to build this application was to showcase about me on my github s
 An example of how it works. The below image is returned in the GET call to the service.
 ![Steam Recent Played](https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/svg?color=coral)
 
-![Playstation Played](https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/svg?color=coral)
+![Playstation Played](https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/svg?color=coral&sanitize=true)
 
 
 ![Random Cat](https://walrus-app-lrhok.ondigitalocean.app/catto)
