@@ -51,6 +51,7 @@ https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/
 * Spotify integration for playlists
 * Trakt.tv integration for movies and shows
 * Better error handling with proper error codes
+* Astronomy Data exposed through the API
 
 ## Documentation
 
