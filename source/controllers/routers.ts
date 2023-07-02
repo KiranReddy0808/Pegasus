@@ -218,7 +218,61 @@ const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
     
 }
 
+const moonPhaseSVG = async (req: Request, res: Response, next: Function) => {
+    try {
+        let appId: any = process.env.ASTRO_APP_ID;
+        let appSecret: any = process.env.ASTRO_APP_SECRET;
+        let latitude: number = req.query.lat?((typeof req.query.lat == 'string' && !!parseInt(req.query.lat))?parseInt(req.query.lat):17.387140):17.387140
+        let longitude: number = req.query.long?((typeof req.query.long == 'string' && !!parseInt(req.query.long))?parseInt(req.query.long):78.491684):78.491684
+        let currDate: any = (new Date()).toISOString().split('T')[0];
+        let date: any = req.query.date?((typeof req.query.date == 'string' && /^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(req.query.date))?req.query.date: currDate):currDate
+        let dataForm: object = {
+            "format": "png",
+            "style": {
+                "moonStyle": "default",
+                "backgroundStyle": "stars",
+                "backgroundColor": "red",
+                "headingColor": "white",
+                "textColor": "red"
+            },
+            "observer": {
+                "latitude": latitude,
+                "longitude": longitude,
+                "date": date
+            },
+            "view": {
+                "type": "portrait-simple",
+                "orientation": "south-up"
+            }
+        }
+        let moonPhase: AxiosResponse = await axios({
+                method: "post",
+                url: "https://api.astronomyapi.com/api/v2/studio/moon-phase",
+                data: dataForm,
+                headers: {
+                    "X-Requested-With": "XMLHttpRequest",
+                    Authorization : `Basic ${btoa(
+                        `${appId}:${appSecret}`
+                      )}`
+                }
+            })
+
+        let resultSVG: AxiosResponse = await axios.get(moonPhase.data.data.imageUrl, {responseType: 'arraybuffer'});
+        let dogImage: any = Buffer.from(resultSVG.data)
+        res.writeHead(200, {
+            'Content-Type': 'image/jpeg',
+            'Content-Length': dogImage.length
+        });
+        res.end(dogImage);
+        }
+        catch(err) {
+            console.log(err)
+            return res.status(500).json('Unable to handle request.')
+        }
+    
+}
 
 
 
-export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo, psnSummary, psnSummarySVG};
+
+export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo, psnSummary, psnSummarySVG, moonPhaseSVG};

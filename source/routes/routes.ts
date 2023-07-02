@@ -12,6 +12,7 @@ router.get('/steam/:id/summary/svg', controller.steamSummarySvg)
 router.get('/doggo', routers.dailyDoggo)
 router.get('/psn/:id/summary', controller.psnSummary)
 router.get('/psn/:id/summary/svg', controller.psnSummarySVG)
+router.get('/moon-phase/svg', controller.moonPhaseSVG)
 
 router.get('/health', standardRoutes.health)
 router.get('/version', standardRoutes.version)
