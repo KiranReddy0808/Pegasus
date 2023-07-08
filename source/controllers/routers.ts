@@ -267,12 +267,12 @@ const moonPhaseSVG = async (req: Request, res: Response, next: Function) => {
             })
 
         let resultSVG: AxiosResponse = await axios.get(moonPhase.data.data.imageUrl, {responseType: 'arraybuffer'});
-        let dogImage: any = Buffer.from(resultSVG.data)
+        let moonImage: any = Buffer.from(resultSVG.data)
         res.writeHead(200, {
             'Content-Type': 'image/jpeg',
-            'Content-Length': dogImage.length
+            'Content-Length': moonImage.length
         });
-        res.end(dogImage);
+        res.end(moonImage);
         }
         catch(err) {
             console.log(err)
