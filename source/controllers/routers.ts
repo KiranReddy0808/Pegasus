@@ -29,12 +29,11 @@ const steamRecentlyPlayed = async (req: Request, res: Response, next: NextFuncti
     try {
         let steamKey:any = process.env.STEAM_KEY;
         let steamId: string = req.params.id;
-        let profileResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
+        let [profileResult, gameResult] = await Promise.all([fetchPlayerSummary(steamKey, steamId), fetchGameSummary(steamKey, steamId) ])
         if(profileResult.data.response.players.length == 0) {
             return res.status(404).json('Player not found. Check if the status of the profile is public.')
         }
-        let result: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
-        let steamRecentlyPlayedPayload: any = result.data;
+        let steamRecentlyPlayedPayload: any = gameResult.data;
         return res.status(200).json({
             data :steamRecentlyPlayedPayload
         });
@@ -45,6 +44,16 @@ const steamRecentlyPlayed = async (req: Request, res: Response, next: NextFuncti
         return res.status(500).json(error.message);
     }
 
+}
+
+const fetchPlayerSummary = async (steamKey: string, steamId: string) => {
+    let profileResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
+    return profileResult
+}
+
+const fetchGameSummary = async (steamKey: string, steamId: string) => {
+    let gameResult: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
+    return gameResult
 }
 
 const dailyCatto = async (req: Request, res: Response, next: NextFunction) => {
@@ -93,22 +102,22 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
         let steamKey:any = process.env.STEAM_KEY;
         let steamId: string = req.params.id;
         let color:string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
-        let summaryResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
+        let [summaryResult, recentlyPlayedResult] = await Promise.all([fetchPlayerSummary(steamKey, steamId), fetchGameSummary(steamKey, steamId)])
         if(summaryResult.data.response.players.length == 0) {
             return res.status(404).json("Steam User Not Found.");
         }
-        let recentlyPlayedResult: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
         let profilePicture = Buffer.from(await (await axios.get(summaryResult.data.response.players[0].avatar, {responseType: 'arraybuffer'})).data).toString('base64');
         let statusNumber: number = summaryResult.data.response.players[0].personastate
         let steamData: SteamData = {name : summaryResult.data.response.players[0].personaname, picture: profilePicture, url: summaryResult.data.response.players[0].profileurl, recentGames: [], status: states[statusNumber]?states[statusNumber]:states[0]};
-        if(recentlyPlayedResult.data.response.games) {
-            for(let recentGame of recentlyPlayedResult.data.response.games) {
-                let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
-                steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks, playTimeForever: recentGame.playtime_forever })
-            }
+        let recentGames: any = recentlyPlayedResult.data.response.games
+        if(recentGames) {
+            await Promise.all(recentGames.map(async (recentGame: any) => {
+                    let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
+                    steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks, playTimeForever: recentGame.playtime_forever })
+            }))
         }
         
-        let svg: any = await generateSVG.generatedSVG(steamData, color);
+        let svg: any = generateSVG.generatedSVG(steamData, color);
         res.setHeader('content-type', 'image/svg+xml')
         res.status(200).send(svg)
     }

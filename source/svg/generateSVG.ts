@@ -3,7 +3,7 @@ import fs from "fs";
 import axios from "axios";
 import sharp from 'sharp';
 
-const generatedSVG = async (steamData: SteamData, color: string) => {
+const generatedSVG = (steamData: SteamData, color: string) => {
     let result: any = ''
     let gamesCount:number = steamData['recentGames'].length;
     let height: number = 220 + gamesCount*80;
