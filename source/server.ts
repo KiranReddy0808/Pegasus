@@ -9,6 +9,9 @@ import yaml from 'js-yaml';
 import swaggerUI from 'swagger-ui-express';
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 import rateLimit, { RateLimitRequestHandler } from 'express-rate-limit';
+import { exchangeCodeForAccessToken, exchangeNpssoForCode} from "psn-api";
+import Cookies from 'js-cookie';
+import { Request, Response, NextFunction } from 'express';
 
 const standardRateLimiter: RateLimitRequestHandler = rateLimit({
     windowMs: 60 * 60 * 1000,
@@ -27,7 +30,9 @@ const rateLimiter: RateLimitRequestHandler = rateLimit({
   legacyHeaders: false,
 });
 
+
 const router: Express = express();
+
 const apiSpecPath: string = path.join(__dirname, 'api', 'api.yaml')
 
 /** Logging */
@@ -44,6 +49,7 @@ router.use('/steam/:id/summary/svg', rateLimiter);
 router.use('/doggo', rateLimiter);
 router.use('/psn/:id/summary', rateLimiter)
 router.use('/psn/:id/summary/svg', rateLimiter)
+router.use('/moon-phase/svg', rateLimiter)
 
 
 router.use('/version', standardRateLimiter);
@@ -62,6 +68,24 @@ router.use((req, res, next) => {
     }
     next();
 });
+
+/** Get auth for PS as the app starts */
+const asyncMiddleware = async (req: Request, res: Response,next: NextFunction) => {
+    let npssoID: any = process.env.NPSSO;
+    const accessCode = await exchangeNpssoForCode(npssoID);
+    const authorization = await exchangeCodeForAccessToken(accessCode);
+    const now = new Date();
+    Cookies.set('psAuth', JSON.stringify({"accessCode" : accessCode, "authorization" : authorization, "expiryTime": new Date( now.getTime() + authorization.expiresIn * 1000).toISOString()}, null, 2))
+    let ans = Cookies.get()
+    console.log(ans)
+    next()
+}
+
+router.get('/', asyncMiddleware, (req,res) => {
+    console.log('Trying PS Login')   
+})
+
+
 
 /** Routes */
 router.use('/', routes);
@@ -82,3 +106,5 @@ router.use((req, res, next) => {
 const httpServer = http.createServer(router);
 const PORT: any = process.env.PORT ?? 6060;
 httpServer.listen(PORT, () => console.log(`The server is running on port ${PORT}`));
+
+
