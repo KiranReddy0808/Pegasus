@@ -9,8 +9,6 @@ import yaml from 'js-yaml';
 import swaggerUI from 'swagger-ui-express';
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 import rateLimit, { RateLimitRequestHandler } from 'express-rate-limit';
-import { exchangeCodeForAccessToken, exchangeNpssoForCode} from "psn-api";
-import { Request, Response, NextFunction } from 'express';
 
 const standardRateLimiter: RateLimitRequestHandler = rateLimit({
     windowMs: 60 * 60 * 1000,
@@ -29,9 +27,7 @@ const rateLimiter: RateLimitRequestHandler = rateLimit({
   legacyHeaders: false,
 });
 
-
 const router: Express = express();
-
 const apiSpecPath: string = path.join(__dirname, 'api', 'api.yaml')
 
 /** Logging */
@@ -88,5 +84,3 @@ router.use((req, res, next) => {
 const httpServer = http.createServer(router);
 const PORT: any = process.env.PORT ?? 6060;
 httpServer.listen(PORT, () => console.log(`The server is running on port ${PORT}`));
-
-
