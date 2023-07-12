@@ -790,7 +790,7 @@ paths:
           required: false
           schema:
             type: string
-            pattern: ^\s*[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
+            pattern: ^[-+]?(180(\.0+)?|((1[0-7]\d)|([1-9]?\d))(\.\d+)?)$
             default: '78.491684'
         - name: date
           in: query
@@ -799,6 +799,8 @@ paths:
           schema:
             type: string
             pattern: ^[0-9]{4}-[0-9]{2}-[0-9]{2}$
+          example: '2023-07-12'
+
       responses:
         '200':
           description: Successfully retrieved the moon phase
