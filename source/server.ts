@@ -10,7 +10,6 @@ import swaggerUI from 'swagger-ui-express';
 require('dotenv').config({ path: path.resolve(__dirname, '../.env') })
 import rateLimit, { RateLimitRequestHandler } from 'express-rate-limit';
 import { exchangeCodeForAccessToken, exchangeNpssoForCode} from "psn-api";
-import Cookies from 'js-cookie';
 import { Request, Response, NextFunction } from 'express';
 
 const standardRateLimiter: RateLimitRequestHandler = rateLimit({
@@ -68,23 +67,6 @@ router.use((req, res, next) => {
     }
     next();
 });
-
-/** Get auth for PS as the app starts */
-const asyncMiddleware = async (req: Request, res: Response,next: NextFunction) => {
-    let npssoID: any = process.env.NPSSO;
-    const accessCode = await exchangeNpssoForCode(npssoID);
-    const authorization = await exchangeCodeForAccessToken(accessCode);
-    const now = new Date();
-    Cookies.set('psAuth', JSON.stringify({"accessCode" : accessCode, "authorization" : authorization, "expiryTime": new Date( now.getTime() + authorization.expiresIn * 1000).toISOString()}, null, 2))
-    let ans = Cookies.get()
-    console.log(ans)
-    next()
-}
-
-router.get('/', asyncMiddleware, (req,res) => {
-    console.log('Trying PS Login')   
-})
-
 
 
 /** Routes */
