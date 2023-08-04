@@ -302,6 +302,7 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
               media {
                 title {
                   english
+                  userPreferred
                 }
                 isAdult
                 coverImage {
@@ -337,7 +338,7 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
         }
         await Promise.all(allManga.map(async (manga: any) => {
                 let mangaImage: any =  Buffer.from (await (await axios.get(manga.media.coverImage.medium, {responseType: 'arraybuffer'})).data).toString('base64');
-                anilistData['structuredAllManga'].push({name: manga.media.title.english, progress: manga.progress, picture: mangaImage, isAdult: manga.media.isAdult, lastUpdated: new Date(manga.updatedAt*1000).toISOString()})
+                anilistData['structuredAllManga'].push({name: manga.media.title.userPreferred, progress: manga.progress, picture: mangaImage, isAdult: manga.media.isAdult, lastUpdated: new Date(manga.updatedAt*1000).toISOString()})
         }))
         let svg: any = generateSVG.generatedAnilistSVG(anilistData);
 
