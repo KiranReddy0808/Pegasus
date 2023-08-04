@@ -41,6 +41,24 @@ const generatedPSNSVG = async (psnData: PsnData, color: string) => {
     return result
 }
 
+const generatedAnilistSVG = (anilistData: any) => {
+    let result: any = ''
+    let mangaCount:number = anilistData['structuredAllManga'].length;
+    let color = 'coral'
+    let height: number = 220 + mangaCount*80;
+    let mangaStatus: string = mangaCount?'Recently Read':'No Recently Read Manga';
+    result = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="750" height="${height}" viewBox="0 0 750 ${height}"><defs></defs><g><rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: ${color}; fill-rule: nonzero; opacity: 1;"  x="0" y="0" width="750" height="${height}" /></g><g><image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="data:image/png;base64,${anilistData['picture']}" x="50" y="50" width="100" height="100"></image></g><g><text xml:space="preserve" font-family="'Indie Flower', cursive" font-size="34" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="175" y="100" >${escapeHtml(anilistData['name'])}</tspan></text>
+    <text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="50" y="200" >${escapeHtml(mangaStatus)}</tspan></text></g>`
+    let pictHeight: number = 220
+    for(let mangaData of anilistData['structuredAllManga']) {
+        result = result +  `<g><image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="data:image/png;base64,${escapeHtml(mangaData['picture'])}"  x="50" y="${pictHeight}" width="70" height="70"></image> <text xml:space="preserve" font-family="'Lucida Console', Monaco, monospace" font-size="15" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="150" y="${pictHeight + 17.5}" >${escapeHtml(mangaData['name'])}</tspan></text><text xml:space="preserve" font-family="'Lucida Console', Monaco, monospace" font-size="15" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="150" y="${pictHeight + 37.5}" >Last Updated: ${escapeHtml(mangaData.lastUpdated)} Chapter: ${mangaData.progress.toString()} </tspan></text></g>`
+        pictHeight = pictHeight + 80;
+    }
+    result = result + `</svg>`
+
+    return result
+}
+
 
 function escapeHtml(text : string) {
     return text
@@ -51,4 +69,4 @@ function escapeHtml(text : string) {
         .replace(/'/g, "&#039;");
   }
 
-export default {generatedSVG, generatedPSNSVG}
+export default {generatedSVG, generatedPSNSVG, generatedAnilistSVG}

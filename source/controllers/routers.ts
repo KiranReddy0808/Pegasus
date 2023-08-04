@@ -282,6 +282,84 @@ const moonPhaseSVG = async (req: Request, res: Response, next: Function) => {
 }
 
 
+const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
+    let anilistUserId: string = req.params.id;
+    var query = `
+    query ($id: Int) {
+        User(id: $id) {
+            name
+            avatar {
+              medium
+            }
+        }
+        MediaListCollection(userId: $id, type: MANGA) {
+          lists {
+            name
+            isSplitCompletedList
+            entries {
+              progress
+              updatedAt
+              media {
+                title {
+                  english
+                }
+                isAdult
+                coverImage {
+                  extraLarge
+                  large
+                  medium
+                  color
+                }
+              }
+            }
+          }
+        }
+    }`;
+    let variables = {
+        id: parseInt(anilistUserId)
+    }
 
 
-export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo, psnSummary, psnSummarySVG, moonPhaseSVG};
+    let url = 'https://graphql.anilist.co'
+    try {
+        let axiosRes = await axios.post(url, JSON.stringify({query: query,variables: variables}), {headers: {'Content-Type': 'application/json','Accept': 'application/json'} })
+        let userImage = Buffer.from (await (await axios.get(axiosRes.data.data.User.avatar.medium, {responseType: 'arraybuffer'})).data).toString('base64');
+        let anilistData: any = {name: axiosRes.data.data.User.name, picture: userImage, structuredAllManga: [] }
+        let mangaLists: any = axiosRes.data.data.MediaListCollection.lists
+        let allManga: any = []
+        for(const mangaList of mangaLists) {
+            for(const manga of mangaList.entries) {
+                if(manga.progress > 0 && new Date().getTime() - manga.updatedAt*1000 < 12096e5) {
+                    allManga = allManga.concat(manga)
+                }
+            }
+                            
+        }
+        await Promise.all(allManga.map(async (manga: any) => {
+                let mangaImage: any =  Buffer.from (await (await axios.get(manga.media.coverImage.medium, {responseType: 'arraybuffer'})).data).toString('base64');
+                anilistData['structuredAllManga'].push({name: manga.media.title.english, progress: manga.progress, picture: mangaImage, isAdult: manga.media.isAdult, lastUpdated: new Date(manga.updatedAt*1000).toISOString()})
+        }))
+        let svg: any = generateSVG.generatedAnilistSVG(anilistData);
+
+        res.setHeader('content-type', 'image/svg+xml')
+        res.status(200).send(svg)
+    }
+    catch(err: any) {
+        console.log(err)
+        if(err.response) {
+            return res.status(err.response.status).json(err.response.data)
+        }
+        else {
+            return res.status(500).json('Unable to handle request')
+        }
+        
+    }
+    
+
+}
+
+
+
+
+
+export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo, psnSummary, psnSummarySVG, moonPhaseSVG, anilistMangaSVG};
