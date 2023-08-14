@@ -1,6 +1,6 @@
 {
   "name": "pegasus",
-  "version": "1.3.0",
+  "version": "2.0.0",
   "description": "",
   "main": "source/server.ts",
   "scripts": {
@@ -11,7 +11,8 @@
     "API",
     "Node",
     "Steam",
-    "SVG"
+    "SVG",
+    "Anilist"
   ],
   "author": "saikiranreddy.saikiran@gmail.com",
   "license": "ISC",
