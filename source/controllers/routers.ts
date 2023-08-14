@@ -2,49 +2,24 @@ import { Request, Response, NextFunction } from 'express';
 import axios, { AxiosResponse } from 'axios';
 import generateSVG from '../svg/generateSVG';
 import { exchangeCodeForAccessToken, exchangeNpssoForCode, getUserTitles, makeUniversalSearch, getProfileFromAccountId} from "psn-api";
-import type {SteamData, PsnData} from "../models"
+import type { SVGModel} from "../models"
 
+class dataSVG {
+    name: string
+    picture: string
+    items: Array<any>
+    status: string
+    meta: object
 
-const steamSummary = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        let steamKey:any = process.env.STEAM_KEY;
-        let steamId: string = req.params.id;
-        let result: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
-        let steamSummaryPayload: any = result.data;
-        if(result.data.response.players.length == 0) {
-            return res.status(404).json('Player not found. Check if the status of the profile is public.')
-        }
-        return res.status(200).json({
-            data: steamSummaryPayload
-        });
+    constructor(name: string, picture: string) {
+        this.name = name
+        this.picture = picture
+        this.items = []
+        this.status = ''
+        this.meta = {}
     }
-    catch(err) {
-        const error = new Error('Unable to Handle Request.');
-        return res.status(500).json(error.message);
-    }
-    
-};
-
-const steamRecentlyPlayed = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-        let steamKey:any = process.env.STEAM_KEY;
-        let steamId: string = req.params.id;
-        let [profileResult, gameResult] = await Promise.all([fetchPlayerSummary(steamKey, steamId), fetchGameSummary(steamKey, steamId) ])
-        if(profileResult.data.response.players.length == 0) {
-            return res.status(404).json('Player not found. Check if the status of the profile is public.')
-        }
-        let steamRecentlyPlayedPayload: any = gameResult.data;
-        return res.status(200).json({
-            data :steamRecentlyPlayedPayload
-        });
-    }
-    catch(err) {
-        const error = new Error('Unable to Handle Request.');
-        console.log(err)
-        return res.status(500).json(error.message);
-    }
-
 }
+
 
 const fetchPlayerSummary = async (steamKey: string, steamId: string) => {
     let profileResult: AxiosResponse = await axios.get(`http://api.steampowered.com/ISteamUser/GetPlayerSummaries/v0002/?key=${steamKey}&steamids=${steamId}`);
@@ -54,6 +29,41 @@ const fetchPlayerSummary = async (steamKey: string, steamId: string) => {
 const fetchGameSummary = async (steamKey: string, steamId: string) => {
     let gameResult: AxiosResponse = await axios.get(`http://api.steampowered.com/IPlayerService/GetRecentlyPlayedGames/v0001/?key=${steamKey}&steamid=${steamId}&format=json`);
     return gameResult
+}
+
+const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) => {
+    let states: Array<string> = ['Offline', 'Online', 'Busy','Away','Snooze','Looking to trade', 'Looking to play']
+    try {
+        let steamKey:any = process.env.STEAM_KEY;
+        let steamId: string = req.params.id;
+        let color:string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+        let [summaryResult, recentlyPlayedResult] = await Promise.all([fetchPlayerSummary(steamKey, steamId), fetchGameSummary(steamKey, steamId)])
+        if(summaryResult.data.response.players.length == 0) {
+            return res.status(404).json("Steam User Not Found.");
+        }
+        let profilePicture = Buffer.from(await (await axios.get(summaryResult.data.response.players[0].avatarfull, {responseType: 'arraybuffer'})).data).toString('base64');
+        let statusNumber: number = summaryResult.data.response.players[0].personastate
+        let data: SVGModel = new dataSVG(summaryResult.data.response.players[0].personaname, profilePicture)
+        data.meta = {status: states[statusNumber]?states[statusNumber]:states[0] }
+
+        let recentGames: any = recentlyPlayedResult.data.response.games
+        data.status = recentGames?'Recently Played':'No Recently Played Games'
+        if(recentGames) {
+            await Promise.all(recentGames.map(async (recentGame: any) => {
+                    let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
+                    data['items'].push({name: recentGame.name, picture: gameImage, meta: {recent : `${Math.round((recentGame.playtime_2weeks*5)/3)/100} hr`, total: `${Math.round((recentGame.playtime_forever*5)/3)/100} hr`  }})
+            }))
+        }
+        
+        let svg: any = generateSVG.SVG(data, color);
+        res.setHeader('content-type', 'image/svg+xml')
+        res.status(200).send(svg)
+    }
+    catch(err) {
+        const error = new Error('Unable to Handle Request.');
+        console.log(err)
+        return res.status(500).json(error.message);
+    }
 }
 
 const dailyCatto = async (req: Request, res: Response, next: NextFunction) => {
@@ -96,37 +106,6 @@ const dailyDoggo = async (req: Request, res: Response, next: NextFunction) => {
         
 }
 
-const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) => {
-    let states: Array<string> = ['Offline', 'Online', 'Busy','Away','Snooze','Looking to trade', 'Looking to play']
-    try {
-        let steamKey:any = process.env.STEAM_KEY;
-        let steamId: string = req.params.id;
-        let color:string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
-        let [summaryResult, recentlyPlayedResult] = await Promise.all([fetchPlayerSummary(steamKey, steamId), fetchGameSummary(steamKey, steamId)])
-        if(summaryResult.data.response.players.length == 0) {
-            return res.status(404).json("Steam User Not Found.");
-        }
-        let profilePicture = Buffer.from(await (await axios.get(summaryResult.data.response.players[0].avatar, {responseType: 'arraybuffer'})).data).toString('base64');
-        let statusNumber: number = summaryResult.data.response.players[0].personastate
-        let steamData: SteamData = {name : summaryResult.data.response.players[0].personaname, picture: profilePicture, url: summaryResult.data.response.players[0].profileurl, recentGames: [], status: states[statusNumber]?states[statusNumber]:states[0]};
-        let recentGames: any = recentlyPlayedResult.data.response.games
-        if(recentGames) {
-            await Promise.all(recentGames.map(async (recentGame: any) => {
-                    let gameImage: any =  Buffer.from (await (await axios.get(`http://media.steampowered.com/steamcommunity/public/images/apps/${recentGame.appid}/${recentGame.img_icon_url}.jpg`, {responseType: 'arraybuffer'})).data).toString('base64');
-                    steamData['recentGames'].push({name: recentGame.name, picture: gameImage, playTimeTwoWeeks: recentGame.playtime_2weeks, playTimeForever: recentGame.playtime_forever })
-            }))
-        }
-        
-        let svg: any = generateSVG.generatedSVG(steamData, color);
-        res.setHeader('content-type', 'image/svg+xml')
-        res.status(200).send(svg)
-    }
-    catch(err) {
-        const error = new Error('Unable to Handle Request.');
-        console.log(err)
-        return res.status(500).json(error.message);
-    }
-}
 
 const psnData = async (psnId: string) => {
     let npssoID: any = process.env.NPSSO
@@ -147,68 +126,42 @@ const psnData = async (psnId: string) => {
         { accessToken: authorization.accessToken },
         accData.accountId
     );
-    let psnUserData: PsnData = {name: accData.verifiedUserName?accData.verifiedUserName:'',onlineId: accData.onlineId, isPSPlus: accData.isPsPlus, accountId: accData.accountId, picture: accData.avatarUrl, games: [] }
-    if(trophyTitlesResponse.trophyTitles) {
-        const gamesData = (trophyTitlesResponse.trophyTitles.length>10)?trophyTitlesResponse.trophyTitles.slice(0,10):trophyTitlesResponse.trophyTitles
-        for(const gameData of gamesData) {
-            psnUserData.games.push({name: gameData.trophyTitleName, picture: gameData.trophyTitleIconUrl, earnedTrophies: gameData.earnedTrophies, definedTrophies: gameData.definedTrophies, platform: gameData.trophyTitlePlatform  })
-        }
-    }
-    
-    return psnUserData
+
+    return {profile: { name: accData.onlineId, isPSPlus: accData.isPsPlus, picture: accData.avatarUrl } ,trophy: trophyTitlesResponse}
 }
 
-const psnMeData = async () => {
+const psnMeData = async (psnId: string) => {
     let npssoID: any = process.env.NPSSO
-    let psOwnerId: any = process.env.PS_OWNER_ID
+    
     const accessCode = await exchangeNpssoForCode(npssoID);
     const authorization = await exchangeCodeForAccessToken(accessCode);
-    const accData: any = await getProfileFromAccountId(authorization, psOwnerId)
+    const accData: any = await getProfileFromAccountId(authorization, psnId)
     const trophyTitlesResponse: any = await getUserTitles(
         { accessToken: authorization.accessToken },
-        psOwnerId
+        psnId
     );
-    let psnUserData: PsnData = {name: accData.personalDetail?(accData.personalDetail.firstName + ' '+ accData.personalDetail.lastName): '', onlineId: accData.onlineId, isPSPlus: accData.isPlus, accountId: psOwnerId, picture: accData.personalDetail?accData.personalDetail.profilePictures[0].url:'', games: [] }
-    if(trophyTitlesResponse.trophyTitles) {
-        const gamesData = (trophyTitlesResponse.trophyTitles.length>10)?trophyTitlesResponse.trophyTitles.slice(0,10):trophyTitlesResponse.trophyTitles
-        for(const gameData of gamesData) {
-            psnUserData.games.push({name: gameData.trophyTitleName, picture: gameData.trophyTitleIconUrl, earnedTrophies: gameData.earnedTrophies, definedTrophies: gameData.definedTrophies, platform: gameData.trophyTitlePlatform  })
-        }
-    }
-    return psnUserData
-
-
-}
-
-const psnSummary = async (req: Request, res: Response, next: Function) => {
-    try {
-        let psnId: string = req.params.id;
-        const psnUserData =(psnId == "me")?await psnMeData(): await psnData(psnId)
-        res.status(200).json({
-            data : {psnUserData}
-        });
-    }
-    catch(err) {
-
-        console.log(err)
-
-        if(err instanceof Error && err.message.includes("No User Found")) {
-            return res.status(404).json(err.message)
-        }
-        else {
-            const error = new Error('Unable to Handle Request.');
-            return res.status(500).json(error.message);
-        }
-    }
-    
+    return {profile: { name: accData.onlineId, isPSPlus: accData.isPlus, picture: accData.personalDetail.profilePictures[0].url}, trophy: trophyTitlesResponse}
 }
 
 const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
     try {
         let psnId: string = req.params.id;
+        let psOwnerId: any = process.env.PS_OWNER_ID
         let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
-        let psnUserData = (psnId == "me")?await psnMeData():(await psnData(psnId))
-        let svg: any = await generateSVG.generatedPSNSVG(psnUserData, color);
+        let psData: any = (psnId == "me")?await psnMeData(psOwnerId):(await psnData(psnId))
+        let profilePicture = Buffer.from(await (await axios.get(psData.profile.picture, {responseType: 'arraybuffer'})).data).toString('base64');
+        let data = new dataSVG (psData.profile.name,profilePicture)
+        data.meta = {plus: psData.profile.isPSPlus}
+        data.status = psData.trophy.trophyTitles?'Played Games':'Game Data is Private';
+        if(psData.trophy.trophyTitles) {
+            const gamesData = (psData.trophy.trophyTitles.length>10)?psData.trophy.trophyTitles.slice(0,10):psData.trophy.trophyTitles
+            await Promise.all(gamesData.map(async (gameData: any) => {
+                let gameImage: any =  Buffer.from (await (await axios.get(gameData.trophyTitleIconUrl, {responseType: 'arraybuffer'})).data).toString('base64');
+                let trophiesData = `Bronze: ${gameData.earnedTrophies.bronze}/${gameData.definedTrophies.bronze} Silver: ${gameData.earnedTrophies.silver}/${gameData.definedTrophies.silver} Gold: ${gameData.earnedTrophies.gold}/${gameData.definedTrophies.gold} Platinum: ${gameData.earnedTrophies.platinum}/${gameData.definedTrophies.platinum}`
+                data['items'].push({name: gameData.trophyTitleName, picture: gameImage, metaFontSize: "10", meta: {trophies: trophiesData, platform: gameData.trophyTitlePlatform}})
+            }))
+        }
+        let svg: any = generateSVG.SVG(data, color);
         res.setHeader('content-type', 'image/svg+xml')
         res.status(200).send(svg)
     }
@@ -284,6 +237,7 @@ const moonPhaseSVG = async (req: Request, res: Response, next: Function) => {
 
 const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
     let anilistUserId: string = req.params.id;
+    let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
     var query = `
     query ($id: Int) {
         User(id: $id) {
@@ -325,7 +279,7 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
     try {
         let axiosRes = await axios.post(url, JSON.stringify({query: query,variables: variables}), {headers: {'Content-Type': 'application/json','Accept': 'application/json'} })
         let userImage = Buffer.from (await (await axios.get(axiosRes.data.data.User.avatar.medium, {responseType: 'arraybuffer'})).data).toString('base64');
-        let anilistData: any = {name: axiosRes.data.data.User.name, picture: userImage, structuredAllManga: [] }
+        let aniData: SVGModel = new dataSVG(axiosRes.data.data.User.name,userImage)
         let mangaLists: any = axiosRes.data.data.MediaListCollection.lists
         let allManga: any = []
         for(const mangaList of mangaLists) {
@@ -336,11 +290,12 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
             }
                             
         }
+        aniData.status = (allManga.length >0)?'Recently Read':'No Recently Read Manga'
         await Promise.all(allManga.map(async (manga: any) => {
                 let mangaImage: any =  Buffer.from (await (await axios.get(manga.media.coverImage.medium, {responseType: 'arraybuffer'})).data).toString('base64');
-                anilistData['structuredAllManga'].push({name: manga.media.title.userPreferred, progress: manga.progress, picture: mangaImage, isAdult: manga.media.isAdult, lastUpdated: new Date(manga.updatedAt*1000).toISOString()})
+                aniData['items'].push({name: manga.media.title.userPreferred, picture: mangaImage, pictureSize: '70', meta: { progress: manga.progress, lastUpdated: new Date(manga.updatedAt*1000).toLocaleString()}})
         }))
-        let svg: any = generateSVG.generatedAnilistSVG(anilistData);
+        let svg: any = generateSVG.SVG(aniData, color);
 
         res.setHeader('content-type', 'image/svg+xml')
         res.status(200).send(svg)
@@ -363,4 +318,4 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
 
 
 
-export default { steamSummary, steamRecentlyPlayed, dailyCatto, steamSummarySvg, dailyDoggo, psnSummary, psnSummarySVG, moonPhaseSVG, anilistMangaSVG};
+export default { dailyCatto, steamSummarySvg, dailyDoggo, psnSummarySVG, moonPhaseSVG, anilistMangaSVG};
