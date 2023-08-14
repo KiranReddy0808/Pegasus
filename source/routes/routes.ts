@@ -5,12 +5,9 @@ import controller from '../controllers/routers';
 import standardRoutes from '../controllers/standard-routes';
 const router = express.Router({mergeParams: true});
 
-router.get('/steam/:id/summary', controller.steamSummary);
-router.get('/steam/:id/recently-played', controller.steamRecentlyPlayed)
 router.get('/catto', routers.dailyCatto)
 router.get('/steam/:id/summary/svg', controller.steamSummarySvg)
 router.get('/doggo', routers.dailyDoggo)
-router.get('/psn/:id/summary', controller.psnSummary)
 router.get('/psn/:id/summary/svg', controller.psnSummarySVG)
 router.get('/moon-phase/svg', controller.moonPhaseSVG)
 router.get('/anilist-manga/:id/recent/svg', controller.anilistMangaSVG)
