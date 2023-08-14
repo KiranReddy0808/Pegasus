@@ -17,6 +17,7 @@ The motivation to build this application was to showcase about me on my github s
 * Valve Steam Account Information
 * Playstation Account Information
 * Random Cat and Dog Images
+* Recently read manga from anilist
 * Standard health and version endpoint
 * Validate Contract with Spectral Stoplight
 * Rate Limiting
@@ -24,33 +25,19 @@ The motivation to build this application was to showcase about me on my github s
 ## Example
 
 An example of how it works. The below image is returned in the GET call to the service.
-![Steam Recent Played](https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/svg?color=coral)
+![Steam Recent Played](https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary?color=coral)
 
 ![Random Cat](https://walrus-app-lrhok.ondigitalocean.app/catto)
 
 
 ![Random Dog](https://walrus-app-lrhok.ondigitalocean.app/doggo)
 
-The service also has other endpoints which return JSON response on the steam data.
+![Anilist Manga](http://walrus-app-lrhok.ondigitalocean.app/anilist-manga/6384185/recent)
 
-https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/summary/
+https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary?color=coral
 
-https://walrus-app-lrhok.ondigitalocean.app/steam/76561198843410510/recently-played/
+https://walrus-app-lrhok.ondigitalocean.app/moon-phase
 
-https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/
-
-https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary/svg?color=coral
-
-
-## Upcoming features
-
-
-* Code vulnerability checks and cleaner, commented code
-* OpenLibray integration for Books
-* Spotify integration for playlists
-* Trakt.tv integration for movies and shows
-* Better error handling with proper error codes
-* Astronomy Data exposed through the API
 
 ## Documentation
 
