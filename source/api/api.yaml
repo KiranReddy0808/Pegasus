@@ -29,7 +29,7 @@ tags:
 
 paths:
 
-  /steam/{id}/summary/svg:
+  /steam/{id}/summary:
     summary: Steam Recently Played SVG
     get:
       operationId: steam-summary-svg
@@ -122,7 +122,7 @@ paths:
                 type: string
                 example: 'You have exceeded number of requests, Try again later!'
 
-  /psn/{id}/summary/svg:
+  /psn/{id}/summary:
     summary: PSN Played SVG
     get:
       operationId: psn-summary-svg
@@ -524,7 +524,7 @@ paths:
                 type: string
                 example: Unable to Handle Request
 
-  /moon-phase/svg:
+  /moon-phase:
     summary: Moon Image Summary
     get:
       operationId: get-moon-phase
@@ -643,7 +643,7 @@ paths:
                 example: Unable to Handle Request
 
 
-  /anilist-manga/{id}/recent/svg:
+  /anilist-manga/{id}/recent:
     summary: Steam Recently Played SVG
     get:
       operationId: anilist-anime-svg
