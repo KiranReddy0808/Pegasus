@@ -8,7 +8,7 @@ info:
     email: saikiranreddy.saikiran@gmail.com
 
 servers:
-  - url: 'https://localhost:8080'
+  - url: 'https://localhost:6060'
     description: Localhost Base URL for the API
   - url: 'https://walrus-app-lrhok.ondigitalocean.app'
     description: Deployed Base URL for the API
@@ -24,175 +24,12 @@ tags:
     description: Playstation Endpoints
   - name: astronomy
     description: Astronomy Endpoints
+  - name: anilist
+    description: Anilist Endpoints
 
 paths:
+
   /steam/{id}/summary:
-    summary: Steam player Summary
-    get:
-      operationId: steam-player-summary
-      description: Fetch steam player summary
-      tags: [steam]
-      parameters:
-        - name: id
-          in: path
-          description: Steam player id
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 64
-      responses:
-        '200':
-          description: Player summary retrieved successfully
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/steamSummary'
-        '400':
-          description: Bad Request
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: bad request
-        '404':
-          description: not found
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: not found
-
-        '500':
-          description: server unavailable
-          content:
-            application/json:
-              schema:
-                type: string
-                example: Unable to Handle Request
-
-        '429':
-          description: Rate Limiting
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-            Retry-After:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: 'You have exceeded number of requests, Try again later!'
-
-  /steam/{id}/recently-played:
-    summary: Steam Recently Played
-    get:
-      operationId: steam-recently-played
-      description: Fetch steam recently played
-      tags: [steam]
-      parameters:
-        - name: id
-          in: path
-          description: Steam player id
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 64
-      responses:
-        '200':
-          description: Player recent played retrieved successfully
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/steamRecentlyPlayed'
-        '400':
-          description: Bad Request
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: bad request
-        '404':
-          description: user not found
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: not found
-
-        '500':
-          description: server unavailable
-          content:
-            application/json:
-              schema:
-                type: string
-                example: Unable to Handle Request
-
-        '429':
-          description: Rate Limiting
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-            Retry-After:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: 'You have exceeded number of requests, Try again later!'
-
-  /steam/{id}/summary/svg:
     summary: Steam Recently Played SVG
     get:
       operationId: steam-summary-svg
@@ -284,90 +121,8 @@ paths:
               schema:
                 type: string
                 example: 'You have exceeded number of requests, Try again later!'
+
   /psn/{id}/summary:
-    summary: PSN player Summary
-    get:
-      operationId: psn-player-summary
-      description: Fetch PSN player summary
-      tags: [playstation]
-      parameters:
-        - name: id
-          in: path
-          description: PSN player name
-          required: true
-          schema:
-            type: string
-            minLength: 1
-            maxLength: 64
-      responses:
-        '200':
-          description: Player summary retrieved successfully
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/psnSummary'
-        '400':
-          description: Bad Request
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: bad request
-        '404':
-          description: not found
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: not found
-
-        '500':
-          description: server unavailable
-          content:
-            application/json:
-              schema:
-                type: string
-                example: Unable to Handle Request
-
-        '429':
-          description: Rate Limiting
-          headers:
-            RateLimit-Limit:
-              $ref: '#/components/headers/RateLimit-Limit'
-            RateLimit-Remaining:
-              $ref: '#/components/headers/RateLimit-Remaining'
-            RateLimit-Reset:
-              $ref: '#/components/headers/RateLimit-Reset'
-            Retry-After:
-              $ref: '#/components/headers/RateLimit-Reset'
-          content:
-            application/json:
-              schema:
-                type: string
-                example: 'You have exceeded number of requests, Try again later!'
-
-  /psn/{id}/summary/svg:
     summary: PSN Played SVG
     get:
       operationId: psn-summary-svg
@@ -769,7 +524,7 @@ paths:
                 type: string
                 example: Unable to Handle Request
 
-  /moon-phase/svg:
+  /moon-phase:
     summary: Moon Image Summary
     get:
       operationId: get-moon-phase
@@ -885,7 +640,101 @@ paths:
             application/json:
               schema:
                 type: string
-                example: Unable to Handle Request            
+                example: Unable to Handle Request
+
+
+  /anilist-manga/{id}/recent:
+    summary: Steam Recently Played SVG
+    get:
+      operationId: anilist-anime-svg
+      description: Fetch recently read manga from anilist as svg
+      tags: [anilist]
+      parameters:
+        - name: id
+          in: path
+          description: anilist id
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+        - name: color
+          in: query
+          description: background color
+          required: false
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 64
+      responses:
+        '200':
+          description: Player recent played retrieved successfully
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
+
+        '404':
+          description: not found
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: not found
+
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+        '429':
+          description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+            Retry-After:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'You have exceeded number of requests, Try again later!'            
 
 components:
   headers:
@@ -910,196 +759,3 @@ components:
         type: number
         minimum: 0
         maximum: 3600
-  schemas:
-
-    psnSummary:
-      type: object
-      properties:
-        psnUserData: 
-          type: object
-          properties:
-            name:
-              type: string
-              minLength: 0
-              maxLength: 100
-            onlineId:
-              type: string
-              minLength: 0
-              maxLength: 100
-            isPSPlus:
-              type: boolean
-            accountId:
-              type: string
-              minLength: 1
-              maxLength: 100
-            picture:
-              type: string
-              format: url
-            games:
-              type: array
-              items:
-                properties:
-                  name:
-                    type: string
-                    minLength: 0
-                    maxLength: 100
-                  picture:
-                    type: string
-                    format: url
-                  earnedTrophies:
-                    type: object
-                    properties:
-                      bronze:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-                      silver:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-                      gold:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-                      platinum:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-                  definedTrophies:
-                    type: object
-                    properties:
-                      bronze:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-                      silver:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-                      gold:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-                      platinum:
-                        type: integer
-                        minimum: 0
-                        maximum: 999999999999
-    steamSummary:
-      type: object
-      properties:
-          data:
-            type: object
-            properties:
-              response:
-                type: object
-                properties:
-                  players:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        steamid: 
-                          type: string
-                          minLength: 0
-                          maxLength: 63
-                        communityvisibilitystate:
-                          type: number
-                          minimum: 0
-                          maximum: 9
-                        profilestate:
-                          type: number
-                          minimum: 0
-                          maximum: 9
-                        personname:
-                          type: string
-                          minLength: 1
-                          maxLength: 100
-                        profileurl:
-                          type: string
-                          format: url
-                        avatar:
-                          type: string
-                          format: url
-                        avatarmedium:
-                          type: string
-                          format: url
-                        avatarfull:
-                          type: string
-                          format: url
-                        avatarhash:
-                          type: string
-                          minLength: 1
-                          maxLength: 100
-                        lastlogoff:
-                          type: number
-                          minimum: 0
-                          maximum: 9999999999999999
-                        personastate:
-                          type: number
-                          minimum: 0
-                          maximum: 9
-                        primaryclanid:
-                          type: string
-                          minLength: 0
-                          maxLength: 999
-                        timecreated:
-                          type: number
-                          minimum: 0
-                          maximum: 9999999999999999
-                        personastateflag:
-                          type: number
-                          minimum: 0
-                          maximum: 9
-    
-    steamRecentlyPlayed:
-      type: object
-      properties:
-        data:
-          type: object
-          properties:
-            responses:
-              type: object
-              properties:
-                total_count:
-                  type: number
-                  minimum: 0
-                  maximum: 100
-                games:
-                  type: array
-                  minItems: 0
-                  maxItems: 100
-                  items:
-                    type: object
-                    properties:
-                      appid:
-                        type: number
-                        minimum: 0
-                        maximum: 99999999999999999999
-                      name:
-                        type: string
-                        minLength: 1
-                        maxLength: 9999999999
-                      playtime_2weeks:
-                        type: number
-                        minimum: 0
-                        maximum: 9999999
-                      playtime_forever:
-                        type: number
-                        minimum: 0
-                        maximum: 999999999999999999
-                      img_icon_url:
-                        type: string
-                        minLength: 1
-                        maxLength: 999999
-                      playtime_windows_forever:
-                        type: number
-                        minimum: 0
-                        maximum: 999999999999999999
-                      playtime_mac_forever:
-                        type: number
-                        minimum: 0
-                        maximum: 999999999999999999
-                      playtime_linux_forever:
-                        type: number
-                        minimum: 0
-                        maximum: 999999999999999999
