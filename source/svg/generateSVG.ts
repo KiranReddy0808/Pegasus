@@ -8,8 +8,8 @@ const SVG = (data: SVGModel, color: string) => {
     for(let key in data.meta) {
         let val: any = (data.meta as any)[key]
         result += `${escapeHtml(changeCase(key))} : ${escapeHtml(val.toString())} `
-        result += `</tspan></text></g>`
     }
+    result += `</tspan></text></g>`
     let pictHeight: number = 220
     for(let item of data['items']) {
         let pictureSize = item.pictureSize?item.pictureSize:"50"
