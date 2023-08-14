@@ -38,10 +38,10 @@ router.use(express.urlencoded({ extended: false }));
 router.use(express.json());
 
 router.use('/catto', rateLimiter);
-router.use('/steam/:id/summary/svg', rateLimiter);
+router.use('/steam/:id/summary', rateLimiter);
 router.use('/doggo', rateLimiter);
-router.use('/psn/:id/summary/svg', rateLimiter)
-router.use('/moon-phase/svg', rateLimiter)
+router.use('/psn/:id/summary', rateLimiter)
+router.use('/moon-phase', rateLimiter)
 
 
 router.use('/version', standardRateLimiter);
