@@ -238,15 +238,62 @@ const moonPhaseSVG = async (req: Request, res: Response, next: Function) => {
 const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
     let anilistUserId: string = req.params.id;
     let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+    try {
+        let svg = await retriveAnilist(anilistUserId, 'MANGA', color, ["Recently Read","No Recently Read Manga"])
+        res.setHeader('content-type', 'image/svg+xml')
+        res.status(200).send(svg)
+    }
+    catch(err: any) {
+        console.log(err)
+        if(err.response) {
+            let message: string = ''
+            for(const errItem of err.response.data.errors) {
+                message+= errItem.message + ','
+            }
+            return res.status(err.response.status).json(message)
+        }
+        else {
+            return res.status(500).json('Unable to handle request')
+        }
+        
+    }
+}
+
+const anilistAnimeSVG = async (req: Request, res: Response, next: Function) => {
+    let anilistUserId: string = req.params.id;
+    let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+    try {
+        let svg = await retriveAnilist(anilistUserId, 'ANIME', color, ["Recently Watched", "No recently watched Anime"])
+        res.setHeader('content-type', 'image/svg+xml')
+        res.status(200).send(svg)
+    }
+    catch(err: any) {
+        console.log(err)
+        if(err.response) {
+            let message: string = ''
+            for(const errItem of err.response.data.errors) {
+                message+= errItem.message
+            }
+            return res.status(err.response.status).json(message)
+        }
+        else {
+            return res.status(500).json('Unable to handle request')
+        }
+        
+    }
+}
+
+const retriveAnilist = async (id : string, type: string, color: string, status: Array<string>) => {
+    let userName: string = id;
     var query = `
-    query ($id: Int) {
-        User(id: $id) {
+    query ($name: String, $type: MediaType) {
+        User(name: $name) {
             name
             avatar {
               medium
             }
-        }
-        MediaListCollection(userId: $id, type: MANGA) {
+          }
+        MediaListCollection(userName: $name, type: $type) {
           lists {
             name
             isSplitCompletedList
@@ -271,51 +318,37 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
         }
     }`;
     let variables = {
-        id: parseInt(anilistUserId)
+        name: userName,
+        type: type
     }
 
 
     let url = 'https://graphql.anilist.co'
-    try {
-        let axiosRes = await axios.post(url, JSON.stringify({query: query,variables: variables}), {headers: {'Content-Type': 'application/json','Accept': 'application/json'} })
-        let userImage = Buffer.from (await (await axios.get(axiosRes.data.data.User.avatar.medium, {responseType: 'arraybuffer'})).data).toString('base64');
-        let aniData: SVGModel = new dataSVG(axiosRes.data.data.User.name,userImage)
-        let mangaLists: any = axiosRes.data.data.MediaListCollection.lists
-        let allManga: any = []
-        for(const mangaList of mangaLists) {
-            for(const manga of mangaList.entries) {
-                if(manga.progress > 0 && new Date().getTime() - manga.updatedAt*1000 < 12096e5) {
-                    allManga = allManga.concat(manga)
-                }
+
+    let axiosRes = await axios.post(url, JSON.stringify({query: query,variables: variables}), {headers: {'Content-Type': 'application/json','Accept': 'application/json'} })
+    let userImage = Buffer.from (await (await axios.get(axiosRes.data.data.User.avatar.medium, {responseType: 'arraybuffer'})).data).toString('base64');
+    let aniData: SVGModel = new dataSVG(axiosRes.data.data.User.name,userImage)
+    let lists: any = axiosRes.data.data.MediaListCollection.lists
+    let allItems: any = []
+    for(const list of lists) {
+        for(const item of list.entries) {
+            if(item.progress > 0 && new Date().getTime() - item.updatedAt*1000 < 12096e5) {
+                allItems = allItems.concat(item)
             }
-                            
-        }
-        aniData.status = (allManga.length >0)?'Recently Read':'No Recently Read Manga'
-        await Promise.all(allManga.map(async (manga: any) => {
-                let mangaImage: any =  Buffer.from (await (await axios.get(manga.media.coverImage.medium, {responseType: 'arraybuffer'})).data).toString('base64');
-                aniData['items'].push({name: manga.media.title.userPreferred, picture: mangaImage, pictureSize: '70', meta: { progress: manga.progress, lastUpdated: new Date(manga.updatedAt*1000).toLocaleString()}})
-        }))
-        let svg: any = generateSVG.SVG(aniData, color);
-
-        res.setHeader('content-type', 'image/svg+xml')
-        res.status(200).send(svg)
+        }                    
     }
-    catch(err: any) {
-        console.log(err)
-        if(err.response) {
-            return res.status(err.response.status).json(err.response.data)
-        }
-        else {
-            return res.status(500).json('Unable to handle request')
-        }
-        
-    }
-    
+    aniData.status = (allItems.length >0)?status[1]:status[0]
+    await Promise.all(allItems.map(async (item: any) => {
+            let itemImage: any =  Buffer.from (await (await axios.get(item.media.coverImage.medium, {responseType: 'arraybuffer'})).data).toString('base64');
+            aniData['items'].push({name: item.media.title.userPreferred, picture: itemImage, pictureSize: '70', meta: { progress: item.progress, lastUpdated: new Date(item.updatedAt*1000).toLocaleString()}})
+    }))
+    let svg: any = generateSVG.SVG(aniData, color);
 
+    return svg
 }
 
 
 
 
 
-export default { dailyCatto, steamSummarySvg, dailyDoggo, psnSummarySVG, moonPhaseSVG, anilistMangaSVG};
+export default { dailyCatto, steamSummarySvg, dailyDoggo, psnSummarySVG, moonPhaseSVG, anilistMangaSVG, anilistAnimeSVG};
