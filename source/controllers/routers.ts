@@ -35,8 +35,8 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
     let states: Array<string> = ['Offline', 'Online', 'Busy','Away','Snooze','Looking to trade', 'Looking to play']
     try {
         let steamKey:any = process.env.STEAM_KEY;
-        let steamId: string = req.params.id;
-        let color:string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+        let steamId: string = escape(req.params.id);
+        let color:string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
         let [summaryResult, recentlyPlayedResult] = await Promise.all([fetchPlayerSummary(steamKey, steamId), fetchGameSummary(steamKey, steamId)])
         if(summaryResult.data.response.players.length == 0) {
             return res.status(404).json("Steam User Not Found.");
@@ -57,7 +57,7 @@ const steamSummarySvg = async (req: Request, res: Response, next: NextFunction) 
         
         let svg: any = generateSVG.SVG(data, color);
         res.setHeader('content-type', 'image/svg+xml')
-        res.status(200).send(svg)
+        res.status(200).send(`${svg}`)
     }
     catch(err) {
         const error = new Error('Unable to Handle Request.');
@@ -239,7 +239,10 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
     let anilistUserId: string = escape(req.params.id);
     let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
     try {
-        let svg = await retriveAnilist(anilistUserId, 'MANGA', color, ["Recently Read","No Recently Read Manga"])
+        let aniData = await retriveAnilist(anilistUserId, 'MANGA', color, ["Recently Read","No Recently Read Manga"])
+        let svg = aniData.svg
+        res.setHeader('x-ratelimit-limit', aniData.rateLimitHeaders['x-ratelimit-limit'])
+        res.setHeader('x-ratelimit-remaining', aniData.rateLimitHeaders['x-ratelimit-remaining'])
         res.setHeader('content-type', 'image/svg+xml')
         res.status(200).send(`${svg}`)
     }
@@ -263,7 +266,10 @@ const anilistAnimeSVG = async (req: Request, res: Response, next: Function) => {
     let anilistUserId: string = req.params.id;
     let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
     try {
-        let svg = await retriveAnilist(anilistUserId, 'ANIME', color, ["Recently Watched", "No recently watched Anime"])
+        let aniData = await retriveAnilist(anilistUserId, 'ANIME', color, ["Recently Watched", "No recently watched Anime"])
+        let svg = aniData.svg
+        res.setHeader('x-ratelimit-limit', aniData.rateLimitHeaders['x-ratelimit-limit'])
+        res.setHeader('x-ratelimit-remaining', aniData.rateLimitHeaders['x-ratelimit-remaining'])
         res.setHeader('content-type', 'image/svg+xml')
         res.status(200).send(`${svg}`)
     }
@@ -344,7 +350,7 @@ const retriveAnilist = async (id : string, type: string, color: string, status: 
     }))
     let svg: any = generateSVG.SVG(aniData, color);
 
-    return svg
+    return {svg: svg, rateLimitHeaders: {'x-ratelimit-limit' : axiosRes.headers['x-ratelimit-limit'],'x-ratelimit-remaining': axiosRes.headers['x-ratelimit-remaining']  }}
 }
 
 
