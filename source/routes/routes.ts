@@ -11,6 +11,7 @@ router.get('/doggo', routers.dailyDoggo)
 router.get('/psn/:id/summary', controller.psnSummarySVG)
 router.get('/moon-phase', controller.moonPhaseSVG)
 router.get('/anilist-manga/:id/recent', controller.anilistMangaSVG)
+router.get('/anilist-anime/:id/recent', controller.anilistAnimeSVG)
 
 router.get('/health', standardRoutes.health)
 router.get('/version', standardRoutes.version)
