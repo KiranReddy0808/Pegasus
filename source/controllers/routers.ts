@@ -147,7 +147,7 @@ const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
     try {
         let psnId: string = req.params.id;
         let psOwnerId: any = process.env.PS_OWNER_ID
-        let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+        let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
         let psData: any = (psnId == "me")?await psnMeData(psOwnerId):(await psnData(psnId))
         let profilePicture = Buffer.from(await (await axios.get(psData.profile.picture, {responseType: 'arraybuffer'})).data).toString('base64');
         let data = new dataSVG (psData.profile.name,profilePicture)
@@ -163,7 +163,7 @@ const psnSummarySVG = async (req: Request, res: Response, next: Function) => {
         }
         let svg: any = generateSVG.SVG(data, color);
         res.setHeader('content-type', 'image/svg+xml')
-        res.status(200).send(svg)
+        res.status(200).send(`${svg}`)
     }
     catch(err) {
 
@@ -236,12 +236,12 @@ const moonPhaseSVG = async (req: Request, res: Response, next: Function) => {
 
 
 const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
-    let anilistUserId: string = req.params.id;
-    let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+    let anilistUserId: string = escape(req.params.id);
+    let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
     try {
         let svg = await retriveAnilist(anilistUserId, 'MANGA', color, ["Recently Read","No Recently Read Manga"])
         res.setHeader('content-type', 'image/svg+xml')
-        res.status(200).send(svg)
+        res.status(200).send(`${svg}`)
     }
     catch(err: any) {
         console.log(err)
@@ -261,11 +261,11 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
 
 const anilistAnimeSVG = async (req: Request, res: Response, next: Function) => {
     let anilistUserId: string = req.params.id;
-    let color: string = req.query.color?((typeof req.query.color == 'string')?req.query.color:'white'): 'white';
+    let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
     try {
         let svg = await retriveAnilist(anilistUserId, 'ANIME', color, ["Recently Watched", "No recently watched Anime"])
         res.setHeader('content-type', 'image/svg+xml')
-        res.status(200).send(svg)
+        res.status(200).send(`${svg}`)
     }
     catch(err: any) {
         console.log(err)
@@ -337,7 +337,7 @@ const retriveAnilist = async (id : string, type: string, color: string, status: 
             }
         }                    
     }
-    aniData.status = (allItems.length >0)?status[1]:status[0]
+    aniData.status = (allItems.length >0)?status[0]:status[1]
     await Promise.all(allItems.map(async (item: any) => {
             let itemImage: any =  Buffer.from (await (await axios.get(item.media.coverImage.medium, {responseType: 'arraybuffer'})).data).toString('base64');
             aniData['items'].push({name: item.media.title.userPreferred, picture: itemImage, pictureSize: '70', meta: { progress: item.progress, lastUpdated: new Date(item.updatedAt*1000).toLocaleString()}})
