@@ -32,11 +32,13 @@ An example of how it works. The below image is returned in the GET call to the s
 
 ![Random Dog](https://walrus-app-lrhok.ondigitalocean.app/doggo)
 
-![Anilist Manga](http://walrus-app-lrhok.ondigitalocean.app/anilist-manga/6384185/recent)
+![Anilist Manga](http://walrus-app-lrhok.ondigitalocean.app/anilist-manga/MasterSoda/recent)
 
 https://walrus-app-lrhok.ondigitalocean.app/psn/me/summary?color=coral
 
 https://walrus-app-lrhok.ondigitalocean.app/moon-phase
+
+http://walrus-app-lrhok.ondigitalocean.app/anilist-anime/MasterSoda/recent
 
 
 ## Documentation
