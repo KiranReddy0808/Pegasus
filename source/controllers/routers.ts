@@ -249,10 +249,7 @@ const anilistMangaSVG = async (req: Request, res: Response, next: Function) => {
     catch(err: any) {
         console.log(err)
         if(err.response) {
-            let message: string = ''
-            for(const errItem of err.response.data.errors) {
-                message+= errItem.message + ','
-            }
+            let message: string = err.response.data?.errors?.toString()
             return res.status(err.response.status).json(message)
         }
         else {
@@ -276,10 +273,7 @@ const anilistAnimeSVG = async (req: Request, res: Response, next: Function) => {
     catch(err: any) {
         console.log(err)
         if(err.response) {
-            let message: string = ''
-            for(const errItem of err.response.data.errors) {
-                message+= errItem.message
-            }
+            let message: string = err.response.data?.errors?.toString()
             return res.status(err.response.status).json(message)
         }
         else {
