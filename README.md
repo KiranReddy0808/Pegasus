@@ -18,6 +18,7 @@ The motivation to build this application was to showcase about me on my github s
 * Playstation Account Information
 * Random Cat and Dog Images
 * Recently read manga from anilist
+* Recently watched anime from anilist
 * Standard health and version endpoint
 * Validate Contract with Spectral Stoplight
 * Rate Limiting
@@ -26,19 +27,6 @@ The motivation to build this application was to showcase about me on my github s
 
 An example of how it works. The below image is returned in the GET call to the service.
 ![Steam Recent Played](https://pegasus-9yoae.ondigitalocean.app/steam/76561198843410510/summary?color=coral)
-
-![Random Cat](https://pegasus-9yoae.ondigitalocean.app/catto)
-
-
-![Random Dog](https://pegasus-9yoae.ondigitalocean.app/doggo)
-
-![Anilist Manga](http://pegasus-9yoae.ondigitalocean.app/anilist-manga/MasterSoda/recent)
-
-https://pegasus-9yoae.ondigitalocean.app/psn/me/summary?color=coral
-
-https://pegasus-9yoae.ondigitalocean.app/moon-phase
-
-http://pegasus-9yoae.ondigitalocean.app/anilist-anime/MasterSoda/recent
 
 
 ## Documentation
