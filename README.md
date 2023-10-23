@@ -11,6 +11,7 @@ The motivation to build this application was to showcase about me on my github s
 2. Define API Contract
 3. Use new Tech Stack
 4. Support static website
+5. Build github pages site
 
 ## Current Features
 
