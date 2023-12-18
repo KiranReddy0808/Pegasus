@@ -348,7 +348,34 @@ const retriveAnilist = async (id : string, type: string, color: string, status: 
 }
 
 
+const retriveSpotify = async (req: Request, res: Response, next: Function) => {
+    let aTRes: any = await accessToken();
+    let headers = {
+        "Authorization" : `Bearer ${aTRes['access_token']}`
+    }
+    try {
+        let response = await axios.get("https://api.spotify.com/v1/artists/4Z8W4fKeB5YxbusRsdQVPb", {headers : headers})
+    }
+    catch(ex: any) {
+        console.log(ex)
+    }
+    
+    return res.status(200).json('Welcome to spotify')
+}
+
+const accessToken = async () => {
+    let data = `grant_type=client_credentials&client_id=${process.env.SPOTIFY_CLIENT_ID}&client_secret=${process.env.SPOTIFY_CLIENT_SECRET}`
+
+    let headers = {
+        "Content-Type": "application/x-www-form-urlencoded"
+    }
+
+    let axiosRes: any = await axios.post("https://accounts.spotify.com/api/token", data, {headers : headers})
+    return axiosRes.data;
+}
 
 
 
-export default { dailyCatto, steamSummarySvg, dailyDoggo, psnSummarySVG, moonPhaseSVG, anilistMangaSVG, anilistAnimeSVG};
+
+
+export default { dailyCatto, steamSummarySvg, dailyDoggo, psnSummarySVG, moonPhaseSVG, anilistMangaSVG, anilistAnimeSVG, retriveSpotify};
