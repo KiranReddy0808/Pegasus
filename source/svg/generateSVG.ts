@@ -27,6 +27,33 @@ const SVG = (data: SVGModel, color: string) => {
     return result
 }
 
+const OWSVG = (data: any) => {
+    let result: string = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1000" height="750" viewBox="0 0 1000 1000"><defs></defs><g><rect style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: ${data.color}; fill-rule: nonzero; opacity: 1;"  x="0" y="0" width="750" height="750" /></g><g>
+    
+    <image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="data:image/png;base64,${escapeHtml(data['picture'])}" x="50" y="50" width="100" height="100"></image>
+    <image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="data:image/svg+xml;base64,${escapeHtml(data['endorsement'])}" x="175" y="100" width="60" height="60"></image></g><g><text xml:space="preserve" font-family="'Indie Flower', cursive" font-size="34" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="175" y="100" >${escapeHtml(data['name'])}</tspan></text></g>
+    
+    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="50" y="200" >Quickplay </tspan></text></g>
+    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="20" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="50" y="230" >won: ${data.quickplay.won} played: ${data.quickplay.played} playtime: ${data.quickplay.time} hr </tspan></text></g>
+
+    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="50" y="270" >Competitive </tspan></text></g>
+    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="20" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="50" y="300" >won: ${data.competitive.won} played: ${data.competitive.played} playtime: ${data.competitive.time} hr </tspan></text></g>`
+    
+    if(data.rank.length > 0) {
+        result += `<g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="50" y="370" >Rank </tspan></text></g>`
+        let height = 370;
+        for(let rank of data.rank) {
+            result += `<g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="20" font-style="normal" font-weight="normal" style="stroke: none; stroke-width: 1; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1; white-space: pre;" ><tspan x="50" y="${height + 30}" >${rank['type']} : ${rank['rank']}</tspan></text>
+            <image style="stroke: none; stroke-width: 0; stroke-dasharray: none; stroke-linecap: butt; stroke-dashoffset: 0; stroke-linejoin: miter; stroke-miterlimit: 4; fill: rgb(0,0,0); fill-rule: nonzero; opacity: 1;"  xlink:href="data:image/png;base64,${escapeHtml(rank['image'])}" x="40" y="${height + 50}" width="75" height="75"></image> </g> `;
+            height += 120
+        }
+    }
+        
+    result += `</svg>`
+    return result;
+}
+
+
 
 function escapeHtml(text : string) {
     return text
@@ -43,6 +70,6 @@ function changeCase (text: String) {
 }
 
 
-export default {SVG}
+export default {SVG, OWSVG}
 
 

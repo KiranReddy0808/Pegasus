@@ -26,9 +26,82 @@ tags:
     description: Astronomy Endpoints
   - name: anilist
     description: Anilist Endpoints
+  - name: overwatch
+    description: Overwatch Endpoints
+
 
 paths:
 
+  /overwatch/{id}/summary:
+    summary: Overwatch profile summary
+    get:
+      operationId: ow-summary-svg
+      description: Overwatch summary
+      tags: [overwatch]
+      parameters:
+        - name: id
+          in: path
+          description: Overwatch Id
+          required: true
+          schema:
+            type: string
+            minLength: 1
+            maxLength: 100
+      responses:
+        '200':
+          description: Overwatch summary
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            image/svg+xml:
+              schema:
+                type: string
+                format: binary
+        '400':
+          description: Bad Request
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: bad request
+
+        '500':
+          description: server unavailable
+          content:
+            application/json:
+              schema:
+                type: string
+                example: Unable to Handle Request
+
+        '429':
+          description: Rate Limiting
+          headers:
+            RateLimit-Limit:
+              $ref: '#/components/headers/RateLimit-Limit'
+            RateLimit-Remaining:
+              $ref: '#/components/headers/RateLimit-Remaining'
+            RateLimit-Reset:
+              $ref: '#/components/headers/RateLimit-Reset'
+            Retry-After:
+              $ref: '#/components/headers/RateLimit-Reset'
+          content:
+            application/json:
+              schema:
+                type: string
+                example: 'You have exceeded number of requests, Try again later!'
+        
   /steam/{id}/summary:
     summary: Steam Recently Played SVG
     get:

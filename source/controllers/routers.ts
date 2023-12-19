@@ -347,8 +347,94 @@ const retriveAnilist = async (id : string, type: string, color: string, status: 
     return {svg: svg, rateLimitHeaders: {'x-ratelimit-limit' : axiosRes.headers['x-ratelimit-limit'],'x-ratelimit-remaining': axiosRes.headers['x-ratelimit-remaining']  }}
 }
 
+const overwatchSVG = async (req: Request, res: Response, next: Function) => {
+
+    try {
+        let owId: String = req.params.id;
+        let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
+        let profileResult= await axios.get(`https://owapi.io/profile/pc/us/${owId}`);
+        if(profileResult.data.private ) {
+            return res.status(400).json({message: "Unable to create SVG. Profile is private."})
+        }
+        if(profileResult.data.message) {
+            return res.status(400).json({message: profileResult.data.message})
+        }
+        let rank: any = profileResult.data.competitive;
+        let [profilePicture, endorsement, supportRank, tankRank, damageRank] = await Promise.all([getIcon(profileResult.data.portrait), getIcon(profileResult.data.endorsement), getIcon(rank?.support?.icon), getIcon(rank?.tank?.icon), getIcon(rank?.offense?.icon)]);
+        let quickplay: any = profileResult.data.games.quickplay;
+        let competitive: any = profileResult.data.games.competitive;
+        let playtime: any = profileResult.data.playtime;
+        let data: any = {name : profileResult.data.username, picture: profilePicture, endorsement: endorsement, quickplay : {won: quickplay.won, played: quickplay.played, time: playtime.quickplay }, competitive: {won: competitive.won, played: competitive.played, time: playtime.competitive}, rank: [], color: color};
+        
+        if(rank) {
+            if(rank.support) {
+                data['rank'].push({type: "support", rank : rank.support.rank, image : supportRank })
+            }
+            if(rank.tank) {
+                data['rank'].push({type: "tank", rank : rank.support.rank, image : tankRank })
+            }
+            if(rank.offense) {
+                data['rank'].push({type: "damage", rank : rank.offense.rank, image : damageRank })
+            }
+        }
+        
+        let svg = generateSVG.OWSVG(data)
+        res.setHeader('content-type', 'image/svg+xml')
+        return res.status(200).send(`${svg}`)
+    }
+    catch(err: any) {
+        console.log(err)
+        if(err.response) {
+            let message: string = err.response.data?.errors?.toString()
+            return res.status(err.response.status).json(message)
+        }
+        else {
+            return res.status(500).json('Unable to handle request')
+        }
+    }
+}
+
+const overwatchStatsSVG = async (req: Request, res: Response, next: Function) => {
+
+    try {
+        let owId: String = req.params.id;
+        let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
+        let profileResult= await axios.get(`https://owapi.io/stats/pc/us/${owId}`);
+        if(profileResult.data.private ) {
+            return res.status(400).json({message: "Unable to create SVG. Profile is private."})
+        }
+        if(profileResult.data.message) {
+            return res.status(400).json({message: profileResult.data.message})
+        }
+        
+        
+        let svg = generateSVG.OWSVG(data)
+        res.setHeader('content-type', 'image/svg+xml')
+        return res.status(200).send(`${svg}`)
+    }
+    catch(err: any) {
+        console.log(err)
+        if(err.response) {
+            let message: string = err.response.data?.errors?.toString()
+            return res.status(err.response.status).json(message)
+        }
+        else {
+            return res.status(500).json('Unable to handle request')
+        }
+    }
+}
+
+const getIcon = async (icon: string) => {
+    if(icon) {
+        let iconImage = Buffer.from(await (await axios.get(icon, {responseType: 'arraybuffer'})).data).toString('base64');
+        return iconImage;
+    }
+    return null;
+}
 
 
 
 
-export default { dailyCatto, steamSummarySvg, dailyDoggo, psnSummarySVG, moonPhaseSVG, anilistMangaSVG, anilistAnimeSVG};
+
+
+export default { dailyCatto, steamSummarySvg, dailyDoggo, psnSummarySVG, moonPhaseSVG, anilistMangaSVG, anilistAnimeSVG, overwatchSVG};
