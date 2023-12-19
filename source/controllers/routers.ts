@@ -394,36 +394,6 @@ const overwatchSVG = async (req: Request, res: Response, next: Function) => {
     }
 }
 
-const overwatchStatsSVG = async (req: Request, res: Response, next: Function) => {
-
-    try {
-        let owId: String = req.params.id;
-        let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
-        let profileResult= await axios.get(`https://owapi.io/stats/pc/us/${owId}`);
-        if(profileResult.data.private ) {
-            return res.status(400).json({message: "Unable to create SVG. Profile is private."})
-        }
-        if(profileResult.data.message) {
-            return res.status(400).json({message: profileResult.data.message})
-        }
-        
-        
-        let svg = generateSVG.OWSVG(data)
-        res.setHeader('content-type', 'image/svg+xml')
-        return res.status(200).send(`${svg}`)
-    }
-    catch(err: any) {
-        console.log(err)
-        if(err.response) {
-            let message: string = err.response.data?.errors?.toString()
-            return res.status(err.response.status).json(message)
-        }
-        else {
-            return res.status(500).json('Unable to handle request')
-        }
-    }
-}
-
 const getIcon = async (icon: string) => {
     if(icon) {
         let iconImage = Buffer.from(await (await axios.get(icon, {responseType: 'arraybuffer'})).data).toString('base64');
