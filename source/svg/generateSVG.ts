@@ -4,7 +4,7 @@ const SVG = (data: SVGModel, color: string) => {
     let itemsCount:number = data['items'].length;
     let height: number = 220 + itemsCount*80;
     let status: string = data.status;
-    let result: string = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1000" height="${height}" viewBox="0 0 1000 ${height}"><defs></defs><g><rect style="fill: ${color};"  x="0" y="0" width="750" height="${height}" /></g><g><image xlink:href="data:image/png;base64,${escapeHtml(data['picture'])}" x="50" y="50" width="100" height="100"></image></g><g><text xml:space="preserve" font-family="'Indie Flower', cursive" font-size="34" ><tspan x="175" y="100" >${escapeHtml(data['name'])}</tspan></text></g><g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" ><tspan x="50" y="200" >${escapeHtml(status)}</tspan></text></g><g><text xml:space="preserve" font-family="'Lucida Console', Monaco, monospace" font-size="15"  ><tspan x="180" y="130" >`
+    let result: string = `<?xml version="1.0" encoding="UTF-8" standalone="no" ?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="1000" height="${height}" viewBox="0 0 1000 ${height}"><defs></defs><g><rect style="fill: ${color};"  x="0" y="0" width="750" height="${height}" /></g><g><image xlink:href="data:image/png;base64,${escapeHtml(data['picture'])}" x="50" y="50" width="100" height="100"></image></g><g><text xml:space="preserve" font-family="'Indie Flower', cursive" font-size="34" ><tspan x="175" y="100" >${escapeHtml(data['name'])}</tspan></text></g><g><text xml:space="preserve" font-size="28" ><tspan x="50" y="200" >${escapeHtml(status)}</tspan></text></g><g><text xml:space="preserve" font-family="'Lucida Console', Monaco, monospace" font-size="15"  ><tspan x="180" y="130" >`
     for(let key in data.meta) {
         let val: any = (data.meta as any)[key]
         result += `${escapeHtml(changeCase(key))} : ${escapeHtml(val.toString())} `
@@ -33,17 +33,14 @@ const OWSVG = (data: any) => {
     <image  xlink:href="data:image/png;base64,${escapeHtml(data['picture'])}" x="50" y="50" width="100" height="100"></image>
     <image  xlink:href="data:image/svg+xml;base64,${escapeHtml(data['endorsement'])}" x="175" y="100" width="60" height="60"></image></g><g><text xml:space="preserve" font-family="'Indie Flower', cursive" font-size="34" ><tspan x="175" y="100" >${escapeHtml(data['name'])}</tspan></text></g>
     
-    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" ><tspan x="50" y="200" >Quickplay </tspan></text></g>
-    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="20" ><tspan x="50" y="230" >won: ${data.quickplay.won} played: ${data.quickplay.played} playtime: ${data.quickplay.time} hr </tspan></text></g>
-
-    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" ><tspan x="50" y="270" >Competitive </tspan></text></g>
-    <g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="20" ><tspan x="50" y="300" >won: ${data.competitive.won} played: ${data.competitive.played} playtime: ${data.competitive.time} hr </tspan></text></g>`
+    <g><text xml:space="preserve" font-size="28" ><tspan x="50" y="200" >Quickplay </tspan> <tspan x="50" y="270" >Competitive </tspan></text></g>
+    <g><text xml:space="preserve" font-size="20" ><tspan x="50" y="230" >won: ${data.quickplay.won} played: ${data.quickplay.played} playtime: ${data.quickplay.time} hr </tspan><tspan x="50" y="300" >won: ${data.competitive.won} played: ${data.competitive.played} playtime: ${data.competitive.time} hr </tspan></text></g>`
     
     if(data.rank.length > 0) {
-        result += `<g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="28" ><tspan x="50" y="370" >Rank </tspan></text></g>`
+        result += `<g><text xml:space="preserve" font-size="28" ><tspan x="50" y="370" >Rank </tspan></text></g>`
         let height = 370;
         for(let rank of data.rank) {
-            result += `<g><text xml:space="preserve" font-family="'Amatic SC', cursive" font-size="20" ><tspan x="50" y="${height + 30}" >${rank['type']} : ${rank['rank']}</tspan></text>
+            result += `<g><text xml:space="preserve" font-size="20" ><tspan x="50" y="${height + 30}" >${rank['type']} : ${rank['rank']}</tspan></text>
             <image  xlink:href="data:image/png;base64,${escapeHtml(rank['image'])}" x="40" y="${height + 50}" width="75" height="75"></image> </g> `;
             height += 120
         }
