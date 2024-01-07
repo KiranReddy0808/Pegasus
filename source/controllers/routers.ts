@@ -350,7 +350,7 @@ const retriveAnilist = async (id : string, type: string, color: string, status: 
 const overwatchSVG = async (req: Request, res: Response, next: Function) => {
 
     try {
-        let owId: String = req.params.id;
+        let owId: String =  escape(req.params.id);
         let color: string = req.query.color?((typeof req.query.color == 'string')?escape(req.query.color):'white'): 'white';
         let profileResult= await axios.get(`https://owapi.io/profile/pc/us/${owId}`);
         if(profileResult.data.private ) {
