@@ -10,7 +10,7 @@ info:
 servers:
   - url: 'https://localhost:6060'
     description: Localhost Base URL for the API
-  - url: 'https://pegasus-9yoae.ondigitalocean.app'
+  - url: 'https://pegasus-api-25ee76a0666a.herokuapp.com/'
     description: Deployed Base URL for the API
 
 tags:
